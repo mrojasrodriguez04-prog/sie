@@ -35,7 +35,6 @@
       <table>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Empresa</th>
             <th>Empresario</th>
             <th>Oferta</th>
@@ -55,7 +54,6 @@
         <tbody>
           {% for empresa in empresas %}
           <tr>
-            <td data-label="ID">{{ empresa.id_empresa }}</td>
             <td data-label="Empresa">{{ empresa.nombre_empresa }}</td>
             <td data-label="Empresario">
               {{ empresa.empresario.nombres_completos }}

@@ -35,7 +35,6 @@
       <table>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Nombres</th>
             <th>Apellidos</th>
             <th>Correo</th>
@@ -47,7 +46,6 @@
         <tbody>
           {% for empresario in empresarios %}
           <tr>
-            <td data-label="ID">{{ empresario.id_empresario }}</td>
             <td data-label="Nombres">{{ empresario.nombres_completos }}</td>
             <td data-label="Apellidos">{{ empresario.apellidos }}</td>
             <td data-label="Correo">{{ empresario.correo_personal }}</td>
