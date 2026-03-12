@@ -12,11 +12,21 @@
   </head>
 
   <body>
-    {% with messages = get_flashed_messages() %} {% if messages %}
-    <script>
-      alert("{{ messages[0] }}");
-    </script>
-    {% endif %} {% endwith %}
+    {% with mensajes = get_flashed_messages() %} {% if mensajes %} {% for
+    mensaje in mensajes %}
+    <div
+      style="
+        background: #7a93d8;
+        color: #000000;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        font-weight: bold;
+      "
+    >
+      {{ mensaje }}
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
     <div class="top-bar">
       <a href="/" class="btn-volver">Volver al inicio</a>
     </div>

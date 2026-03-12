@@ -33,6 +33,12 @@ def guardar_empresario():
     correo = request.form["correo"]
     tipo = request.form["tipo"]
     rol = request.form["rol"]
+    
+    correo_existente = Empresario.query.filter_by(correo_personal=correo).first()
+
+    if correo_existente:
+        flash("⚠️ Este correo ya está registrado")
+        return redirect(url_for("registrar_empresario"))
 
     nuevo = Empresario(
         nombres_completos=nombres,
@@ -47,7 +53,7 @@ def guardar_empresario():
 
     flash("Empresario registrado correctamente")
 
-    return redirect(url_for("listar_empresario"))
+    return redirect(url_for("listar_empresarios"))
 
 
 

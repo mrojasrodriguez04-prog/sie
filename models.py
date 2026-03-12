@@ -12,7 +12,7 @@ class Empresario(db.Model):
     tipo_persona = db.Column(db.Enum('Natural','Jurídica'), nullable=False)
     rol_empresario = db.Column(db.Enum('Propietario','Representante Legal','Otro'), nullable=False)
     
-    empresas = db.relationship('Empresa', backref='empresario', lazy=True)
+    empresas = db.relationship('Empresa', backref='empresario', cascade="all, delete")
 
 class Sector(db.Model):
     __tablename__ = 'sector'
@@ -50,7 +50,7 @@ class Ciudad(db.Model):
 class Empresa(db.Model):
     __tablename__ = 'empresa'
     id_empresa = db.Column(db.Integer, primary_key=True)
-    id_empresario = db.Column(db.Integer,db.ForeignKey('empresario.id_empresario'),nullable=False)
+    id_empresario = db.Column(db.Integer,db.ForeignKey('empresario.id_empresario',ondelete='CASCADE'),nullable=False)
     nombre_empresa = db.Column(db.String(150), nullable=False)
     tipo_oferta = db.Column(db.Enum('Productos','Servicios','Mixta'),nullable=False)
     actividad_economica = db.Column(db.String(150))
