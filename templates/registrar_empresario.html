@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Registrar Empresario</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/registrar.css') }}"
+    />
+  </head>
+
+  <body>
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <script>
+      alert("{{ messages[0] }}");
+    </script>
+    {% endif %} {% endwith %}
+    <div class="top-bar">
+      <a href="/" class="btn-volver">Volver al inicio</a>
+    </div>
+    <h2 class="titulo">Registrar Empresario</h2>
+    <div class="form-container">
+      <form action="/guardar_empresario" method="POST">
+        <div class="form-group">
+          <label>Nombres completos</label>
+          <input type="text" name="nombres" required />
+        </div>
+
+        <div class="form-group">
+          <label>Apellidos</label>
+          <input type="text" name="apellidos" required />
+        </div>
+
+        <div class="form-group">
+          <label>Correo personal</label>
+          <input type="email" name="correo" required />
+        </div>
+
+        <div class="form-group">
+          <label>Tipo de persona</label>
+          <select name="tipo" required>
+            <option value="">Seleccione...</option>
+
+            {% for tipo in tipos %}
+            <option value="{{tipo}}">{{tipo}}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Rol del empresario</label>
+          <select name="rol" required>
+            <option value="">Seleccione...</option>
+
+            {% for rol in roles %}
+            <option value="{{rol}}">{{rol}}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <button type="submit" class="btn-registrar">
+          Registrar Empresario
+        </button>
+      </form>
+    </div>
+  </body>
+</html>

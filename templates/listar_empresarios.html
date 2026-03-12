@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lista de Empresarios</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/listar.css') }}"
+    />
+  </head>
+
+  <body>
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <script>
+      alert("{{ messages[0] }}");
+    </script>
+    {% endif %} {% endwith %}
+    <div class="top-bar">
+      <a href="/" class="btn-volver">Volver al inicio</a>
+    </div>
+    <div class="table-container">
+      <h2>Lista de Empresarios</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Correo</th>
+            <th>Tipo Persona</th>
+            <th>Rol Empresario</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for empresario in empresarios %}
+          <tr>
+            <td data-label="ID">{{ empresario.id_empresario }}</td>
+            <td data-label="Nombres">{{ empresario.nombres_completos }}</td>
+            <td data-label="Apellidos">{{ empresario.apellidos }}</td>
+            <td data-label="Correo">{{ empresario.correo_personal }}</td>
+            <td data-label="Tipo Persona">{{ empresario.tipo_persona }}</td>
+            <td data-label="Rol">{{ empresario.rol_empresario }}</td>
+            <td data-label="Acción">
+              <a href="/eliminar_empresario/{{ empresario.id_empresario }}">
+                <button>Eliminar</button>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

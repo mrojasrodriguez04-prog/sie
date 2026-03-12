@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lista de Empresas</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/listaEmp.css') }}"
+    />
+  </head>
+
+  <body>
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <script>
+      alert("{{ messages[0] }}");
+    </script>
+    {% endif %} {% endwith %}
+    <div class="top-bar">
+      <a href="/" class="btn-volver">Volver al inicio</a>
+    </div>
+    <div class="table-container">
+      <h2>Lista de Empresas</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Empresa</th>
+            <th>Empresario</th>
+            <th>Oferta</th>
+            <th>Actividad Económica</th>
+            <th>Persona Jurídica</th>
+            <th>Tamaño</th>
+            <th>Empleados</th>
+            <th>Punto de Venta</th>
+            <th>Dirección</th>
+            <th>Ciudad</th>
+            <th>Teléfono</th>
+            <th>Correo</th>
+            <th>Sitio Web</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for empresa in empresas %}
+          <tr>
+            <td data-label="ID">{{ empresa.id_empresa }}</td>
+            <td data-label="Empresa">{{ empresa.nombre_empresa }}</td>
+            <td data-label="Empresario">
+              {{ empresa.empresario.nombres_completos }}
+            </td>
+            <td data-label="Oferta">{{ empresa.tipo_oferta }}</td>
+            <td data-label="Actividad Económica">
+              {{ empresa.actividad_economica }}
+            </td>
+            <td data-label="Persona Jurídica">
+              {{ empresa.tipo_persona_juridica }}
+            </td>
+            <td data-label="Tamaño">{{ empresa.tamano_empresa }}</td>
+            <td data-label="Empleados">{{ empresa.numero_empleados }}</td>
+            <td data-label="Punto de Venta">{{ empresa.punto_venta }}</td>
+            <td data-label="Dirección">{{ empresa.direccion_comercial }}</td>
+            <td data-label="Ciudad">{{ empresa.ciudad.nombre_ciudad }}</td>
+            <td data-label="Teléfono">{{ empresa.telefono_contacto }}</td>
+            <td data-label="Correo">{{ empresa.correo_empresarial }}</td>
+            <td data-label="Sitio Web">{{ empresa.sitio_web }}</td>
+            <td data-label="Acciones">
+              <a href="/empresa/eliminar/{{ empresa.id_empresa }}">
+                <button>Eliminar</button>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

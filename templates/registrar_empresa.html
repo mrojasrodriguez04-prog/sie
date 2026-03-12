@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Registrar Empresa</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/registrarEmp.css') }}"
+    />
+  </head>
+
+  <body>
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <script>
+      alert("{{messages[0]}}");
+    </script>
+    {% endif %} {% endwith %}
+
+    <div class="top-bar">
+      <a href="/" class="btn-volver">Volver al inicio</a>
+    </div>
+
+    <h2 class="titulo">Registrar Empresa</h2>
+
+    <div class="form-container">
+      <form action="/empresa/guardar" method="POST">
+        <div class="form-group">
+          <label>Nombre de la empresa</label>
+          <input type="text" name="nombre_empresa" required />
+        </div>
+
+        <div class="form-group">
+          <label>Empresario</label>
+          <select name="empresario" required>
+            {% for e in empresarios %}
+            <option value="{{e.id_empresario}}">
+              {{e.nombres_completos}} {{e.apellidos}}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Tipo de oferta</label>
+          <select name="tipo_oferta">
+            <option>Productos</option>
+            <option>Servicios</option>
+            <option>Mixta</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Actividad económica</label>
+          <input type="text" name="actividad" />
+        </div>
+
+        <div class="form-group">
+          <label>Tipo persona jurídica</label>
+          <select name="tipo_persona">
+            <option>SAS</option>
+            <option>LTDA</option>
+            <option>S.A.</option>
+            <option>S.C.A.</option>
+            <option>S. en C</option>
+            <option>Colectiva</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Tamaño empresa</label>
+          <select name="tamano">
+            <option>Micro</option>
+            <option>Pequeña</option>
+            <option>Mediana</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Punto de venta</label>
+          <select name="punto_venta">
+            <option>Físico</option>
+            <option>Virtual</option>
+            <option>Mixto</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Dirección comercial</label>
+          <input type="text" name="direccion" />
+        </div>
+
+        <div class="form-group">
+          <label>Número de empleados</label>
+          <input type="number" name="empleados" />
+        </div>
+
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input type="text" name="telefono" />
+        </div>
+
+        <div class="form-group">
+          <label>Correo empresarial</label>
+          <input type="email" name="correo" />
+        </div>
+
+        <div class="form-group">
+          <label>Sitio web</label>
+          <input type="text" name="web" />
+        </div>
+
+        <div class="form-group">
+          <label>Subsector</label>
+          <select name="subsector">
+            {% for s in subsectores %}
+            <option value="{{s.id_subsector}}">{{s.nombre_subsector}}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Ciudad</label>
+          <select name="ciudad">
+            {% for c in ciudades %}
+            <option value="{{c.id_ciudad}}">{{c.nombre_ciudad}}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <button type="submit" class="btn-registrar">Registrar empresa</button>
+      </form>
+    </div>
+  </body>
+</html>

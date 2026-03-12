@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Inicio</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/index.css') }}"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-+qdLaB5m0v1k1eE3fR2eT5t1A4J0t9jWbi7r1ikT9VgW8ZfFfJp8eFZk8GZP2F6R"
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>SIE- SISTEMA DE INFORMACIÓN EMPRESARIAL</h1>
+
+      <a href="/registrar_empresario"><button>Registrar Empresario</button> </a>
+
+      <a href="/empresarios"><button>Lista de Empresarios</button> </a>
+
+      <a href="/empresa/registrar"><button>Registrar Empresa</button> </a>
+
+      <a href="/empresa/listar"><button>Lista de Empresas</button> </a>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+3/1eZ0L2hBz0+P1xZdWvC1zIjfF"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
