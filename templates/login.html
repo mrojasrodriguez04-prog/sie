@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Inicio</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/login.css') }}"
+    />
+  </head>
+
+  <body>
+    <div class="mensaje-container">
+      {% with mensajes = get_flashed_messages() %} {% if mensajes %} {% for
+      mensaje in mensajes %}
+      <div class="mensaje">{{ mensaje }}</div>
+      {% endfor %} {% endif %} {% endwith %}
+    </div>
+    <div class="login-container">
+      <h2>Iniciar sesión</h2>
+      <h4>SIE - SISTEMA DE INFORMACIÓN EMPRESARIAL</h4>
+      <br />
+
+      <form action="/validar_login" method="POST">
+        <div class="input-group">
+          <label>Correo</label>
+          <input type="email" name="email" required />
+        </div>
+
+        <div class="input-group">
+          <label>Contraseña</label>
+          <input type="password" name="password" required />
+        </div>
+
+        <button type="submit">Ingresar</button>
+      </form>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Registro Redes Sociales</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/registraRed.css') }}"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-+qdLaB5m0v1k1eE3fR2eT5t1A4J0t9jWbi7r1ikT9VgW8ZfFfJp8eFZk8GZP2F6R"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div class="mensaje-container">
+      {% with mensajes = get_flashed_messages() %} {% if mensajes %} {% for
+      mensaje in mensajes %}
+      <div class="mensaje">{{ mensaje }}</div>
+      {% endfor %} {% endif %} {% endwith %}
+    </div>
+
+    <div class="top-bar">
+      <a href="/empresa/{{ empresa.id_empresa }}/redes" class="btn-volver"
+        >Volver</a
+      >
+    </div>
+
+    <div class="form-container">
+      <h2>Registrar red social</h2>
+      <h3>Empresa: {{ empresa.nombre_empresa }}</h3>
+      <h3>
+        Empresario: {{ empresario.nombres_completos }} {{ empresario.apellidos
+        }}
+      </h3>
+
+      <form action="/guardar_red/{{ empresa.id_empresa }}" method="POST">
+        <div class="input-group">
+          <label>Tipo de red</label>
+          <select name="tipo_red">
+            <option>Facebook</option>
+            <option>Instagram</option>
+            <option>Twitter</option>
+            <option>LinkedIn</option>
+            <option>TikTok</option>
+            <option>Otra</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label>URL</label>
+          <input type="text" name="url_red" required />
+        </div>
+
+        <button type="submit">Guardar</button>
+      </form>
+    </div>
+  </body>
+</html>

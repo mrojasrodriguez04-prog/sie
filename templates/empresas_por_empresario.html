@@ -3,13 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Lista de Empresas</title>
+    <title>Empresas</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/listaEmp.css') }}"
     />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-+qdLaB5m0v1k1eE3fR2eT5t1A4J0t9jWbi7r1ikT9VgW8ZfFfJp8eFZk8GZP2F6R"
+      crossorigin="anonymous"
+    />
   </head>
-
   <body>
     {% with mensajes = get_flashed_messages() %} {% if mensajes %} {% for
     mensaje in mensajes %}
@@ -27,27 +32,30 @@
     </div>
     {% endfor %} {% endif %} {% endwith %}
     <div class="top-bar">
-      <a href="/" class="btn-volver">Volver al inicio</a>
+      <a href="/empresarios" class="btn-volver">Volver</a>
     </div>
     <div class="table-container">
       <h2>Lista de Empresas</h2>
+
+      <h3>
+        Empresario: {{ empresario.nombres_completos }} {{ empresario.apellidos
+        }}
+      </h3>
+
+      <a href="{{ url_for('registrar_empresa', id=empresario.id_empresario) }}"
+        ><button class="btn-registrar">Registrar empresa</button></a
+      >
 
       <table>
         <thead>
           <tr>
             <th>Empresa</th>
-            <th>Empresario</th>
-            <th>Oferta</th>
             <th>Actividad Económica</th>
             <th>Persona Jurídica</th>
             <th>Tamaño</th>
-            <th>Empleados</th>
-            <th>Punto de Venta</th>
-            <th>Dirección</th>
             <th>Ciudad</th>
-            <th>Teléfono</th>
-            <th>Correo</th>
-            <th>Sitio Web</th>
+            <th>Sedes</th>
+            <th>Redes</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -55,10 +63,6 @@
           {% for empresa in empresas %}
           <tr>
             <td data-label="Empresa">{{ empresa.nombre_empresa }}</td>
-            <td data-label="Empresario">
-              {{ empresa.empresario.nombres_completos }}
-            </td>
-            <td data-label="Oferta">{{ empresa.tipo_oferta }}</td>
             <td data-label="Actividad Económica">
               {{ empresa.actividad_economica }}
             </td>
@@ -66,13 +70,18 @@
               {{ empresa.tipo_persona_juridica }}
             </td>
             <td data-label="Tamaño">{{ empresa.tamano_empresa }}</td>
-            <td data-label="Empleados">{{ empresa.numero_empleados }}</td>
-            <td data-label="Punto de Venta">{{ empresa.punto_venta }}</td>
-            <td data-label="Dirección">{{ empresa.direccion_comercial }}</td>
             <td data-label="Ciudad">{{ empresa.ciudad.nombre_ciudad }}</td>
-            <td data-label="Teléfono">{{ empresa.telefono_contacto }}</td>
-            <td data-label="Correo">{{ empresa.correo_empresarial }}</td>
-            <td data-label="Sitio Web">{{ empresa.sitio_web }}</td>
+            <td>
+              <a href="/empresa/{{ empresa.id_empresa }}/sedes">
+                <button>Ver sedes</button>
+              </a>
+            </td>
+
+            <td>
+              <a href="/empresa/{{ empresa.id_empresa }}/redes">
+                <button>Ver redes</button>
+              </a>
+            </td>
             <td data-label="Acciones">
               <a href="/empresa/eliminar/{{ empresa.id_empresa }}">
                 <button>Eliminar</button>

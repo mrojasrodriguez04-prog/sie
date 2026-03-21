@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Lista de Empresarios</title>
+    <title>Empresarios</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/listar.css') }}"
@@ -27,7 +27,7 @@
     </div>
     {% endfor %} {% endif %} {% endwith %}
     <div class="top-bar">
-      <a href="/" class="btn-volver">Volver al inicio</a>
+      <a href="/panel" class="btn-volver">Volver</a>
     </div>
     <div class="table-container">
       <h2>Lista de Empresarios</h2>
@@ -54,6 +54,11 @@
             <td data-label="Acción">
               <a href="/eliminar_empresario/{{ empresario.id_empresario }}">
                 <button>Eliminar</button>
+              </a>
+              <a
+                href="{{ url_for('empresas_por_empresario', id=empresario.id_empresario) }}"
+              >
+                <button>Ver empresas</button>
               </a>
             </td>
           </tr>

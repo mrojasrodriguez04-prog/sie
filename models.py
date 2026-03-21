@@ -2,6 +2,17 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+class Usuario(db.Model):
+    _tablename_ = "usuario"
+
+    id_usuario = db.Column(db.Integer, primary_key=True)
+    nombres = db.Column(db.String(100), nullable=False)
+    apellidos = db.Column(db.String(100), nullable=False)
+    tipo_doc = db.Column(db.Enum('CC','TI','PPT'), nullable=False)
+    numero_doc = db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(255))
+    tipo_usuario = db.Column(db.Enum('aprendiz','instructor','admin'))
 class Empresario(db.Model):
     __tablename__ = 'empresario'
 
@@ -64,3 +75,20 @@ class Empresa(db.Model):
     sitio_web = db.Column(db.String(150))
     id_subsector = db.Column(db.Integer,db.ForeignKey('subsector.id_subsector'),nullable=False)
     id_ciudad = db.Column(db.Integer,db.ForeignKey('ciudad.id_ciudad'),nullable=False)
+    
+class Sede(db.Model):
+    __tablename__ = "sede"
+
+    id_sede = db.Column(db.Integer, primary_key=True)
+    id_empresa = db.Column(db.Integer, db.ForeignKey("empresa.id_empresa"))
+    nombre_sede = db.Column(db.String(100))
+    direccion = db.Column(db.String(100))
+
+
+class RedSocial(db.Model):
+    __tablename__ = "red_social"
+
+    id_red = db.Column(db.Integer, primary_key=True)
+    id_empresa = db.Column(db.Integer, db.ForeignKey("empresa.id_empresa"))
+    tipo_red = db.Column(db.Enum('Facebook','Instagram','Twitter','LinkedIn','TikTok','Otra'))
+    url_red = db.Column(db.String(200))
