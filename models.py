@@ -75,7 +75,14 @@ class Empresa(db.Model):
     sitio_web = db.Column(db.String(150))
     id_subsector = db.Column(db.Integer,db.ForeignKey('subsector.id_subsector'),nullable=False)
     id_ciudad = db.Column(db.Integer,db.ForeignKey('ciudad.id_ciudad'),nullable=False)
-    
+    flota = db.relationship("TipoFlota", backref="empresa", uselist=False)
+class TipoFlota(db.Model):
+    __tablename__ = "tipo_flota"
+
+    id_flota = db.Column(db.Integer, primary_key=True)
+    id_empresa = db.Column(db.Integer, db.ForeignKey("empresa.id_empresa"))
+    tipo_flota = db.Column(db.Enum('Propia', 'Tercerizada'))
+
 class Sede(db.Model):
     __tablename__ = "sede"
 
@@ -92,3 +99,20 @@ class RedSocial(db.Model):
     id_empresa = db.Column(db.Integer, db.ForeignKey("empresa.id_empresa"))
     tipo_red = db.Column(db.Enum('Facebook','Instagram','Twitter','LinkedIn','TikTok','Otra'))
     url_red = db.Column(db.String(200))
+
+class ProcesoEmpresarial(db.Model):
+    __tablename__ = "proceso_empresarial"
+
+    id_proceso = db.Column(db.Integer, primary_key=True)
+    id_empresa = db.Column(db.Integer, db.ForeignKey("empresa.id_empresa"))
+    tipo_proceso = db.Column(db.Enum('Estratégico','Misional','De Apoyo','De Evaluación','Importación','Exportación'))
+    subproceso_area = db.Column(db.String(150))
+    cargos = db.relationship('Cargo',backref='proceso',cascade="all, delete",passive_deletes=True)
+
+class Cargo(db.Model):
+    __tablename__ = "cargo"
+
+    id_cargo = db.Column(db.Integer, primary_key=True)
+    id_proceso = db.Column(db.Integer,db.ForeignKey('proceso_empresarial.id_proceso', ondelete="CASCADE"))
+    nombre_cargo = db.Column(db.String(100))
+    cantidad_empleados = db.Column(db.Integer)

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Procesos</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/registroCargo.css') }}">
+</head>
+<body>
+    <div class="top-bar">
+  <a href="/proceso/{{ proceso.id_proceso }}/cargos" class="btn-volver">
+    Volver
+  </a>
+</div>
+
+
+
+<div class="form-container">
+  <form action="/guardar_cargo/{{ proceso.id_proceso }}" method="POST">
+    <h2>Nuevo Cargo</h2>
+
+<h3 class="breadcrumb">
+  <a href="/empresario/{{ empresa.id_empresario }}/empresas">
+    {{ empresa.nombre_empresa }}
+  </a>
+  >
+  <a href="/empresa/{{ empresa.id_empresa }}/procesos">
+    {{ proceso.subproceso_area }}
+  </a>
+</h3>
+    <div class="form-group">
+      <label>Nombre del cargo</label>
+      <input type="text" name="nombre_cargo" required />
+    </div>
+
+    <div class="form-group">
+      <label>Cantidad de empleados</label>
+      <select name="cantidad">
+        {% for i in range(1,11) %}
+        <option value="{{i}}">{{i}}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <button type="submit">Guardar</button>
+
+  </form>
+</div>
+</body>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Procesos</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/sede.css') }}">
+</head>
+<body>
+     <body>
+    {% with mensajes = get_flashed_messages() %} {% if mensajes %} {% for
+    mensaje in mensajes %}
+    <div
+      style="
+        background: #7a93d8;
+        color: #000000;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        font-weight: bold;
+      "
+    >
+      {{ mensaje }}
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
+
+<div class="top-bar">
+  <a href="{{ url_for('empresas_por_empresario', id=empresa.id_empresario) }}" class="btn-volver">
+    Volver
+  </a>
+</div>
+
+<div class="table-container">
+  <h2>Procesos</h2>
+  <h3>{{ empresa.nombre_empresa }}</h3>
+
+  <div class="btn-top">
+    <a href="/proceso/nuevo/{{ empresa.id_empresa }}">
+      <button class="btn-registrar">+ Nuevo proceso</button>
+    </a>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Subproceso / Área</th>
+        <th>Tipo proceso</th>
+        <th>Cargo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for p in procesos %}
+      <tr>
+        <td>{{ p.subproceso_area }}</td>
+        <td>{{ p.tipo_proceso }}</td>
+        <td>
+          <a href="/proceso/{{ p.id_proceso }}/cargos">
+            <button>Ver cargos</button>
+        </a>
+        </td>
+        <td>
+          <a href="/proceso/eliminar/{{ p.id_proceso }}">
+            <button style="background:red;color:white;">Eliminar</button>
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>

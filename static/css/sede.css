@@ -144,6 +144,23 @@ td button:hover {
 }
 
 
+.breadcrumb {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.breadcrumb a {
+  text-decoration: none;
+  color: black;
+  transition: 0.3s;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+  color: #162c6e;
+}
 
 @media (max-width: 992px) {
   .table-container {

@@ -54,8 +54,10 @@
             <th>Persona Jurídica</th>
             <th>Tamaño</th>
             <th>Ciudad</th>
+            <th>Tipo Flota</th>
             <th>Sedes</th>
             <th>Redes</th>
+            <th>Procesos</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -71,6 +73,7 @@
             </td>
             <td data-label="Tamaño">{{ empresa.tamano_empresa }}</td>
             <td data-label="Ciudad">{{ empresa.ciudad.nombre_ciudad }}</td>
+            <td data-label="Tipo Flota">{{ empresa.flota.tipo_flota }}</td>
             <td>
               <a href="/empresa/{{ empresa.id_empresa }}/sedes">
                 <button>Ver sedes</button>
@@ -82,6 +85,13 @@
                 <button>Ver redes</button>
               </a>
             </td>
+
+            <td>
+              <a href="/empresa/{{ empresa.id_empresa }}/procesos">
+                <button>Ver procesos</button>
+              </a>
+            </td>
+            
             <td data-label="Acciones">
               <a href="/empresa/eliminar/{{ empresa.id_empresa }}">
                 <button>Eliminar</button>

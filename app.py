@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, session, url_for,flash
 from werkzeug.security import check_password_hash, generate_password_hash
-from models import db, Empresario, Subsector, Ciudad, Empresa, Usuario, Sede,RedSocial
+from models import db, TipoFlota, Empresario, Subsector, Ciudad, Empresa, Usuario, Sede,RedSocial, ProcesoEmpresarial, Cargo
 
 
 
@@ -206,6 +206,13 @@ def guardar_empresa(id_empresario):
 
     db.session.add(nueva_empresa)
     db.session.commit()
+    nueva_flota = TipoFlota(
+        id_empresa=nueva_empresa.id_empresa,
+        tipo_flota=request.form["tipo_flota"]
+    )
+
+    db.session.add(nueva_flota)
+    db.session.commit()
 
     flash("Empresa registrada correctamente")
 
@@ -348,6 +355,118 @@ def eliminar_red(id):
 
     return redirect(url_for("listar_redes", id_empresa=id_empresa))
     
+#procesos
+@app.route("/proceso/nuevo/<int:id_empresa>")
+def nuevo_proceso(id_empresa):
 
+    empresa = Empresa.query.get(id_empresa)
+
+    return render_template(
+        "registro_proceso.html",
+        empresa=empresa
+    )
+
+
+@app.route("/guardar_proceso/<int:id_empresa>", methods=["POST"])
+def guardar_proceso(id_empresa):
+
+    nuevo = ProcesoEmpresarial(
+        id_empresa=id_empresa,
+        subproceso_area=request.form["subproceso_area"],
+        tipo_proceso=request.form["tipo_proceso"]
+    )
+
+    db.session.add(nuevo)
+    db.session.commit()
+
+    flash("Proceso registrado correctamente")
+
+    return redirect(url_for("listar_procesos", id_empresa=id_empresa))
+
+@app.route("/empresa/<int:id_empresa>/procesos")
+def listar_procesos(id_empresa):
+
+    empresa = Empresa.query.get(id_empresa)
+    procesos = ProcesoEmpresarial.query.filter_by(id_empresa=id_empresa).all()
+
+    return render_template(
+        "listar_procesos.html",
+        empresa=empresa,
+        procesos=procesos
+    )
+
+@app.route("/proceso/eliminar/<int:id>")
+def eliminar_proceso(id):
+
+    proceso = ProcesoEmpresarial.query.get(id)
+    id_empresa = proceso.id_empresa
+
+    db.session.delete(proceso)
+    db.session.commit()
+
+    flash("Proceso eliminado")
+
+    return redirect(url_for("listar_procesos", id_empresa=id_empresa))
+
+#cargos
+
+@app.route("/cargo/nuevo/<int:id_proceso>")
+def nuevo_cargo(id_proceso):
+
+    proceso = ProcesoEmpresarial.query.get_or_404(id_proceso)
+    empresa = Empresa.query.get(proceso.id_empresa)
+
+    return render_template(
+        "registro_cargo.html",
+        proceso=proceso,
+        empresa=empresa
+    )
+
+@app.route("/guardar_cargo/<int:id_proceso>", methods=["POST"])
+def guardar_cargo(id_proceso):
+
+    nuevo = Cargo(
+        id_proceso=id_proceso,
+        nombre_cargo=request.form["nombre_cargo"],
+        cantidad_empleados=request.form["cantidad"]
+    )
+
+    db.session.add(nuevo)
+    db.session.commit()
+
+    flash("Cargo registrado correctamente")
+
+    return redirect(url_for("listar_cargos", id_proceso=id_proceso))
+
+@app.route("/proceso/<int:id_proceso>/cargos")
+def listar_cargos(id_proceso):
+
+    proceso = ProcesoEmpresarial.query.get_or_404(id_proceso)
+    empresa = Empresa.query.get(proceso.id_empresa)
+
+    cargos = Cargo.query.filter_by(id_proceso=id_proceso).all()
+
+    return render_template(
+        "listar_cargos.html",
+        proceso=proceso,
+        empresa=empresa,
+        cargos=cargos
+    )
+
+@app.route("/cargo/eliminar/<int:id>")
+def eliminar_cargo(id):
+
+    cargo = Cargo.query.get(id)
+
+    if cargo:
+        id_proceso = cargo.id_proceso
+        db.session.delete(cargo)
+        db.session.commit()
+        flash("Cargo eliminado correctamente")
+        return redirect(url_for("listar_cargos", id_proceso=id_proceso))
+
+    flash("Cargo no encontrado")
+    return redirect(url_for("panel"))
+    
 if __name__ == "__main__":
     app.run(debug=True)
