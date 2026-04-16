@@ -1,0 +1,67 @@
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Canal</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/canal.css') }}"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-+qdLaB5m0v1k1eE3fR2eT5t1A4J0t9jWbi7r1ikT9VgW8ZfFfJp8eFZk8GZP2F6R"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    {% with mensajes = get_flashed_messages() %} {% if mensajes %} {% for
+    mensaje in mensajes %}
+    <div
+      style="
+        background: #7a93d8;
+        color: #000000;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        font-weight: bold;
+      "
+    >
+      {{ mensaje }}
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
+   
+    </div>
+    <a href="{{ url_for('empresas_por_empresario', id=empresa.id_empresario) }}" class="btn-volver">
+  Volver
+</a>
+<div class="table-container">
+<h2>Canales de Venta</h2>
+<h3>{{ empresa.nombre_empresa }}</h3>
+<h4>{{ empresario.nombres_completos }} {{ empresario.apellidos }}</h4>
+<div class="btn-top">
+<a href="/canal/nuevo/{{ empresa.id_empresa }}">
+<button>+ Nuevo canal</button>
+</a>
+</div>
+
+<table>
+<tr>
+<th>Canal</th>
+<th>Acciones</th>
+</tr>
+
+{% for c in canales %}
+<tr>
+<td>{{ c.canal }}</td>
+<td>
+<a href="/canal/eliminar/{{ c.id_canal }}">
+<button class="btn-eliminar">Eliminar</button>
+</a>
+</td>
+</tr>
+</div>
+{% endfor %}
+</table>

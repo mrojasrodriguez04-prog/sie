@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Problematica</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/problema.css') }}"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-+qdLaB5m0v1k1eE3fR2eT5t1A4J0t9jWbi7r1ikT9VgW8ZfFfJp8eFZk8GZP2F6R"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    {% with mensajes = get_flashed_messages() %} {% if mensajes %} {% for
+    mensaje in mensajes %}
+    <div
+      style="
+        background: #7a93d8;
+        color: #000000;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        font-weight: bold;
+      "
+    >
+      {{ mensaje }}
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
+<div class="top-bar">
+  <a href="/empresa/{{ empresa.id_empresa }}/procesos" class="btn-volver">
+    Volver
+  </a>
+</div>
+
+<div class="table-container">
+  <h2>Problemáticas</h2>
+
+  <h3 class="breadcrumb">
+    <a href="/empresario/{{ empresa.id_empresario }}/empresas">
+      {{ empresa.nombre_empresa }}
+    </a>
+    >
+    <a href="/empresa/{{ empresa.id_empresa }}/procesos">
+      {{ proceso.subproceso_area }}
+    </a>
+  </h3>
+
+  <div class="btn-top">
+    <a href="/problema/nuevo/{{ proceso.id_proceso }}">
+      <button class="btn-registrar">+ Nueva problemática</button>
+    </a>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Descripción</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for pr in problemas %}
+      <tr>
+        <td>{{ pr.descripcion }}</td>
+        <td>
+          <a href="/problema/eliminar/{{ pr.id_problematica }}">
+            <button style="background:red;color:white;">Eliminar</button>
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+
+  </table>
+</div>
+
+</body>
+</html>

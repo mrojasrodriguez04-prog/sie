@@ -76,6 +76,8 @@ class Empresa(db.Model):
     id_subsector = db.Column(db.Integer,db.ForeignKey('subsector.id_subsector'),nullable=False)
     id_ciudad = db.Column(db.Integer,db.ForeignKey('ciudad.id_ciudad'),nullable=False)
     flota = db.relationship("TipoFlota", backref="empresa", uselist=False)
+    stakeholders = db.relationship('Stakeholder', backref='empresa', cascade="all, delete")
+    canales = db.relationship('CanalVenta', backref='empresa', cascade="all, delete")
 class TipoFlota(db.Model):
     __tablename__ = "tipo_flota"
 
@@ -116,3 +118,48 @@ class Cargo(db.Model):
     id_proceso = db.Column(db.Integer,db.ForeignKey('proceso_empresarial.id_proceso', ondelete="CASCADE"))
     nombre_cargo = db.Column(db.String(100))
     cantidad_empleados = db.Column(db.Integer)
+
+class Stakeholder(db.Model):
+    __tablename__ = "stakeholder"
+
+    id_stakeholder = db.Column(db.Integer, primary_key=True)
+    id_empresa = db.Column(db.Integer, db.ForeignKey('empresa.id_empresa'))
+    nombre_area = db.Column(db.String(120))
+
+
+class CanalVenta(db.Model):
+    __tablename__ = "canal_venta"
+
+    id_canal = db.Column(db.Integer, primary_key=True)
+    id_empresa = db.Column(db.Integer, db.ForeignKey('empresa.id_empresa'))
+
+    canal = db.Column(db.Enum(
+        'Presencial','WhatsApp','Instagram','Página Web','Otro'))
+
+class Problematica(db.Model):
+    __tablename__ = "problematica"
+
+    id_problematica = db.Column(db.Integer, primary_key=True)
+    id_proceso = db.Column(db.Integer, db.ForeignKey("proceso_empresarial.id_proceso"))
+    descripcion = db.Column(db.Text, nullable=False)
+    proceso = db.relationship("ProcesoEmpresarial", backref="problematicas")
+
+class Infraestructura(db.Model):
+    __tablename__ = "infraestructura"
+
+    id_infraestructura = db.Column(db.Integer, primary_key=True)
+    id_empresa = db.Column(db.Integer, db.ForeignKey("empresa.id_empresa"))
+    tipo = db.Column(db.Enum('Servidor','Computadores','Software especializado','Centro de datos'))
+
+    empresa = db.relationship("Empresa", backref="infraestructuras")
+
+
+class SoftwareUsado(db.Model):
+    __tablename__ = "software_usado"
+
+    id_software = db.Column(db.Integer, primary_key=True)
+    id_empresa = db.Column(db.Integer, db.ForeignKey("empresa.id_empresa"))
+    usa_software = db.Column(db.Boolean)
+    nombre_software = db.Column(db.String(120))
+
+    empresa = db.relationship("Empresa", backref="softwares")

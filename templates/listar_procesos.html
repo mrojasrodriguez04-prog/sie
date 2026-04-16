@@ -45,6 +45,7 @@
         <th>Subproceso / Área</th>
         <th>Tipo proceso</th>
         <th>Cargo</th>
+        <th>Problemática</th>
         <th>Acciones</th>
       </tr>
     </thead>
@@ -58,6 +59,11 @@
           <a href="/proceso/{{ p.id_proceso }}/cargos">
             <button>Ver cargos</button>
         </a>
+        <td>
+          <a href="/proceso/{{ p.id_proceso }}/problemas">
+            <button>Ver problemas</button>
+          </a>
+        </td>
         </td>
         <td>
           <a href="/proceso/eliminar/{{ p.id_proceso }}">

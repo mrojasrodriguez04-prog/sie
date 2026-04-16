@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, session, url_for,flash
 from werkzeug.security import check_password_hash, generate_password_hash
-from models import db, TipoFlota, Empresario, Subsector, Ciudad, Empresa, Usuario, Sede,RedSocial, ProcesoEmpresarial, Cargo
+from models import db,TipoFlota, Empresario, Subsector, Ciudad, Empresa, Usuario, Sede,RedSocial, ProcesoEmpresarial, Cargo, Stakeholder,CanalVenta,Problematica,Infraestructura,SoftwareUsado
 
 
 
@@ -467,6 +467,251 @@ def eliminar_cargo(id):
 
     flash("Cargo no encontrado")
     return redirect(url_for("panel"))
+
+#Stakeholders
+@app.route("/stakeholder/nuevo/<int:id_empresa>")
+def nuevo_stakeholder(id_empresa):
+    empresa = Empresa.query.get(id_empresa)
+    empresario = Empresario.query.get(empresa.id_empresario)
+
+    return render_template(
+        "registro_stakeholder.html",
+        empresa=empresa,
+        empresario=empresario
+    )
+
+@app.route("/guardar_stakeholder/<int:id_empresa>", methods=["POST"])
+def guardar_stakeholder(id_empresa):
+    nuevo = Stakeholder(
+        id_empresa=id_empresa,
+        nombre_area=request.form["nombre_area"]
+    )
+
+    db.session.add(nuevo)
+    db.session.commit()
+
+    flash("Stakeholder registrado correctamente")
+
+    return redirect(url_for('listar_stakeholders', id=id_empresa))
+
+@app.route("/empresa/<int:id>/stakeholders")
+def listar_stakeholders(id):
+    empresa = Empresa.query.get(id)
+    empresario = Empresario.query.get(empresa.id_empresario)
+
+    stakeholders = Stakeholder.query.filter_by(id_empresa=id).all()
+
+    return render_template(
+        "listar_stakeholder.html",
+        empresa=empresa,
+        empresario=empresario,
+        stakeholders=stakeholders
+    )
+
+@app.route("/stakeholder/eliminar/<int:id>")
+def eliminar_stakeholder(id):
+    s = Stakeholder.query.get(id)
+
+    if s:
+        db.session.delete(s)
+        db.session.commit()
+
+    return redirect(request.referrer)
+
+#Canal de venta
+@app.route("/canal/nuevo/<int:id_empresa>")
+def nuevo_canal(id_empresa):
+    empresa = Empresa.query.get(id_empresa)
+    empresario = Empresario.query.get(empresa.id_empresario)
+
+    return render_template(
+        "registro_canal.html",
+        empresa=empresa,
+        empresario=empresario
+    )
+
+@app.route("/guardar_canal/<int:id_empresa>", methods=["POST"])
+def guardar_canal(id_empresa):
+    nuevo = CanalVenta(
+        id_empresa=id_empresa,
+        canal=request.form["canal"]
+    )
+
+    db.session.add(nuevo)
+    db.session.commit()
+    flash("Canal Registrado correctamente")
+    return redirect(url_for('listar_canales', id=id_empresa))
     
+@app.route("/empresa/<int:id>/canales")
+def listar_canales(id):
+    empresa = Empresa.query.get(id)
+    empresario = Empresario.query.get(empresa.id_empresario)
+
+    canales = CanalVenta.query.filter_by(id_empresa=id).all()
+
+    return render_template(
+        "listar_canal.html",
+        empresa=empresa,
+        empresario=empresario,
+        canales=canales
+    )
+@app.route("/canal/eliminar/<int:id>")
+def eliminar_canal(id):
+    c = CanalVenta.query.get(id)
+
+    if c:
+        db.session.delete(c)
+        db.session.commit()
+
+    return redirect(request.referrer)
+#problematca-procesos
+@app.route("/problema/nuevo/<int:id_proceso>")
+def nuevo_problema(id_proceso):
+    proceso = ProcesoEmpresarial.query.get_or_404(id_proceso)
+    empresa = Empresa.query.get(proceso.id_empresa)
+
+    return render_template(
+        "registro_problema.html",
+        proceso=proceso,
+        empresa=empresa
+    )
+@app.route("/guardar_problema/<int:id_proceso>", methods=["POST"])
+def guardar_problema(id_proceso):
+    nueva = Problematica(
+        id_proceso=id_proceso,
+        descripcion=request.form["descripcion"]
+    )
+
+    db.session.add(nueva)
+    db.session.commit()
+
+    flash("Problemática registrada correctamente")
+    return redirect(url_for("listar_problemas", id_proceso=id_proceso))
+@app.route("/proceso/<int:id_proceso>/problemas")
+def listar_problemas(id_proceso):
+    proceso = ProcesoEmpresarial.query.get_or_404(id_proceso)
+    empresa = Empresa.query.get(proceso.id_empresa)
+
+    problemas = Problematica.query.filter_by(id_proceso=id_proceso).all()
+
+    return render_template(
+        "listar_problemas.html",
+        proceso=proceso,
+        empresa=empresa,
+        problemas=problemas
+    )
+
+@app.route("/problema/eliminar/<int:id>")
+def eliminar_problema(id):
+    problema = Problematica.query.get_or_404(id)
+    id_proceso = problema.id_proceso
+
+    db.session.delete(problema)
+    db.session.commit()
+
+    flash("Problemática eliminada")
+
+    return redirect(url_for("listar_problemas", id_proceso=id_proceso))   
+    
+
+#Infraestructura
+@app.route("/empresa/<int:id>/infraestructura")
+def listar_infraestructura(id):
+    empresa = Empresa.query.get_or_404(id)
+    empresario = Empresario.query.get(empresa.id_empresario)
+
+    infra = Infraestructura.query.filter_by(id_empresa=id).all()
+
+    return render_template("listar_infraestructura.html",
+                           empresa=empresa,
+                           empresario=empresario,
+                           infraestructuras=infra)
+
+
+@app.route("/infraestructura/nuevo/<int:id>")
+def nuevo_infraestructura(id):
+    empresa = Empresa.query.get_or_404(id)
+    empresario = Empresario.query.get(empresa.id_empresario)
+
+    return render_template("registro_infraestructura.html",
+                           empresa=empresa,
+                           empresario=empresario)
+
+
+@app.route("/guardar_infraestructura/<int:id>", methods=["POST"])
+def guardar_infraestructura(id):
+    nueva = Infraestructura(
+        id_empresa=id,
+        tipo=request.form["tipo"]
+    )
+
+    db.session.add(nueva)
+    db.session.commit()
+
+    flash("Infraestructura registrada")
+    return redirect(f"/empresa/{id}/infraestructura")
+
+
+@app.route("/infraestructura/eliminar/<int:id>")
+def eliminar_infraestructura(id):
+    i = Infraestructura.query.get(id)
+    db.session.delete(i)
+    db.session.commit()
+
+    flash("Eliminado")
+    return redirect(request.referrer)
+
+#sofware
+
+@app.route("/empresa/<int:id>/software")
+def listar_software(id):
+    empresa = Empresa.query.get_or_404(id)
+    empresario = Empresario.query.get(empresa.id_empresario)
+
+    software = SoftwareUsado.query.filter_by(id_empresa=id).all()
+
+    return render_template("listar_software.html",
+                           empresa=empresa,
+                           empresario=empresario,
+                           softwares=software)
+
+
+@app.route("/software/nuevo/<int:id>")
+def nuevo_software(id):
+    empresa = Empresa.query.get_or_404(id)
+    empresario = Empresario.query.get(empresa.id_empresario)
+
+    return render_template("registro_software.html",
+                           empresa=empresa,
+                           empresario=empresario)
+
+
+@app.route("/guardar_software/<int:id>", methods=["POST"])
+def guardar_software(id):
+
+    usa = True if request.form.get("usa_software") == "on" else False
+
+    nuevo = SoftwareUsado(
+        id_empresa=id,
+        usa_software=usa,
+        nombre_software=request.form["nombre"]
+    )
+
+    db.session.add(nuevo)
+    db.session.commit()
+
+    flash("Software registrado")
+    return redirect(f"/empresa/{id}/software")
+
+
+@app.route("/software/eliminar/<int:id>")
+def eliminar_software(id):
+    s = SoftwareUsado.query.get(id)
+    db.session.delete(s)
+    db.session.commit()
+
+    flash("Eliminado")
+    return redirect(request.referrer)
+
 if __name__ == "__main__":
     app.run(debug=True)
