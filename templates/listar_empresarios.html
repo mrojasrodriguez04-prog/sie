@@ -30,6 +30,24 @@
       <a href="/panel" class="btn-volver">Volver</a>
     </div>
     <div class="table-container">
+      <div class="filtros">
+
+  <select id="filtroTipo">
+    <option value="">Tipo Persona</option>
+    <option value="Natural">Natural</option>
+    <option value="Jurídica">Jurídica</option>
+  </select>
+
+  <select id="filtroRol">
+    <option value="">Rol Empresario</option>
+    <option value="Propietario">Propietario</option>
+    <option value="Representante Legal">Representante Legal</option>
+  </select>
+
+</div>
+      <div class="logo">
+        <img src="{{ url_for('static', filename='img/logo_sena.png') }}">
+      </div>
       <h2>Lista de Empresarios</h2>
 
       <table>
@@ -65,6 +83,84 @@
           {% endfor %}
         </tbody>
       </table>
+      <div class="paginacion" id="paginacion"></div>
     </div>
+<script>
+let filas = document.querySelectorAll("tbody tr");
+let filtroTipo = document.getElementById("filtroTipo");
+let filtroRol = document.getElementById("filtroRol");
+
+let pagina = 1;
+let porPagina = 6;
+
+
+function aplicarFiltros() {
+  let tipo = filtroTipo.value.toLowerCase();
+  let rol = filtroRol.value.toLowerCase();
+
+  filas.forEach(fila => {
+    let tipoFila = fila.children[3].innerText.toLowerCase();
+    let rolFila = fila.children[4].innerText.toLowerCase();
+
+    if (
+      (tipo === "" || tipoFila.includes(tipo)) &&
+      (rol === "" || rolFila.includes(rol))
+    ) {
+      fila.dataset.visible = "true";
+    } else {
+      fila.dataset.visible = "false";
+      fila.style.display = "none";
+    }
+  });
+
+  pagina = 1;
+  mostrarPagina();
+}
+
+function mostrarPagina() {
+  let visibles = Array.from(filas).filter(f => f.dataset.visible !== "false");
+
+  let totalPaginas = Math.ceil(visibles.length / porPagina);
+
+  visibles.forEach((fila, i) => {
+    let inicio = (pagina - 1) * porPagina;
+    let fin = inicio + porPagina;
+
+    fila.style.display = (i >= inicio && i < fin) ? "" : "none";
+  });
+
+  renderPaginacion(totalPaginas);
+}
+
+/* PAGINACION NUMERICA */
+function renderPaginacion(total) {
+  let contenedor = document.getElementById("paginacion");
+  contenedor.innerHTML = "";
+
+  for (let i = 1; i <= total; i++) {
+    let btn = document.createElement("button");
+    btn.innerText = i;
+
+    if (i === pagina) {
+      btn.classList.add("activo");
+    }
+
+    btn.onclick = () => {
+      pagina = i;
+      mostrarPagina();
+    };
+
+    contenedor.appendChild(btn);
+  }
+}
+
+/* EVENTOS */
+filtroTipo.addEventListener("change", aplicarFiltros);
+filtroRol.addEventListener("change", aplicarFiltros);
+
+/* INICIO */
+filas.forEach(f => f.dataset.visible = "true");
+mostrarPagina();
+</script>
   </body>
 </html>

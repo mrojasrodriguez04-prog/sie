@@ -1,141 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap');
+
 :root {
-  --azul-oscuro: #1e3a8a;
-  --blanco: #ffffff;
-  --gris-claro: #f8f9fa;
-  --gris-medio: #d1d5db;
-  --rojo-accent: #dc2626;
+  --main-color: #39A900;
+  --secondary-color: #012970;
+  --bg-color: #f6f9ff;
 }
-
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
 
 body {
-  background-color: var(--gris-claro);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  font-family: "Work Sans", sans-serif;
+  background: var(--bg-color);
+  color: #444;
+  padding: 20px 30px;
 }
 
 
+.mensaje-container {
+  margin-bottom: 15px;
+}
+
+.mensaje {
+  background: #d1e7dd;
+  color: #0f5132;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
 .top-bar {
-  position: absolute;
-  top: 20px;
-  left: 20px;
+  margin-bottom: 15px;
 }
 
 .btn-volver {
   text-decoration: none;
-  background: var(--azul-oscuro);
-  color: var(--blanco);
-  padding: 8px 14px;
+  background-color: var(--main-color);
+  color: #fff;
+  padding: 8px 16px;
   border-radius: 6px;
-  font-size: 0.9rem;
+  font-size: 14px;
+  font-weight: 600;
   transition: 0.3s;
 }
 
 .btn-volver:hover {
-  background: #162c6e;
+  background-color: #0b2c1f;
+}
+
+/* TITULO */
+.pagetitle h1 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--secondary-color);
+  margin-bottom: 5px;
+  margin-left: 250px;
+
+}
+
+.pagetitle h3 {
+  font-size: 14px;
+  font-weight: bold;
+  color: #6c757d;
+  margin-left: 250px;
 }
 
 
-h2 {
-  text-align: center;
-  color: var(--azul-oscuro);
+.form-container {
+  width: 600px;             
+  margin-top: 20px;
+  margin-left: 250px;
+  margin-right: auto;       
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0px 0 20px rgba(1, 41, 112, 0.1);
+}
+
+
+.card-title {
+  font-size: 20px;
+  color: var(--secondary-color);
   margin-bottom: 5px;
 }
 
-h3 {
-  text-align: center;
-  color: #555;
-  margin-bottom: 20px;
-  font-size: 0.95rem;
-}
-h4 {
-  text-align: center;
-  color: #555;
-  margin-bottom: 20px;
-  font-size: 0.95rem;
+.text-muted{
+  font-size: 13px;
+  color: #012970;
 }
 
-.form-container {
-  background: var(--blanco);
-  padding: 30px;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 420px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-}
 
 
 .input-group {
+  display: flex;
+  flex-direction: column;
   margin-bottom: 15px;
 }
 
 .input-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-size: 0.9rem;
+  font-size: 14px;
   font-weight: 600;
-  color: var(--azul-oscuro);
+  margin-bottom: 5px;
 }
 
-
+/* INPUTS Y SELECT */
+.input-group input,
 .input-group select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid var(--gris-medio);
+  padding: 8px;
   border-radius: 6px;
-  font-size: 0.95rem;
-  transition: 0.3s;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  transition: 0.2s;
 }
 
-
+/* FOCUS */
+.input-group input:focus,
 .input-group select:focus {
   outline: none;
-  border-color: var(--azul-oscuro);
-  box-shadow: 0 0 5px rgba(30, 58, 138, 0.2);
+  border-color: var(--main-color);
+  box-shadow: 0 0 5px rgba(57, 169, 0, 0.3);
 }
 
-
+/* BOTON */
 button {
-  width: 100%;
-  padding: 12px;
-  background-color: var(--azul-oscuro);
-  color: var(--blanco);
+  width: auto;
+  padding: 8px 20px;
+  background-color: var(--main-color);
+  color: #fff;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
+  border-radius: 6px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: 0.3s;
 }
 
-
 button:hover {
-  background-color: #162c6e;
-  transform: translateY(-2px);
+  background-color: #2a7900;
 }
-
-
-.mensaje-container {
-  position: absolute;
-  top: 20px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.mensaje {
-  background: #7a93d8;
-  color: #000;
-  padding: 10px 20px;
-  border-radius: 8px;
+.is-required::after {
+  content: " *";
+  color: #dc3545;
   font-weight: bold;
 }

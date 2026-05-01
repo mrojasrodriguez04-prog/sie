@@ -2,31 +2,58 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Nuevo proceso</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Modulo Procesos</title>
+
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+
   <link rel="stylesheet" href="{{ url_for('static', filename='css/registroProceso.css') }}">
 </head>
+
 <body>
+    <div class="mensaje-container">
+      {% with mensajes = get_flashed_messages() %} {% if mensajes %} {% for
+      mensaje in mensajes %}
+      <div class="mensaje">{{ mensaje }}</div>
+      {% endfor %} {% endif %} {% endwith %}
+    </div>
 
-<div class="top-bar">
-  <a href="/empresa/{{ empresa.id_empresa }}/procesos" class="btn-volver">
-    Volver
-  </a>
-</div>
+    <div class="top-bar">
+      <a href="/empresa/{{ empresa.id_empresa }}/procesos" class="btn-volver"
+        >Volver</a
+      >
+    </div>
+      <div class="pagetitle">
+    <h1>Registrar Procesos</h1>
+      <h3>Empresa: {{ empresa.nombre_empresa }} </h3>
+    </div>
 
+       
 
+    <div class="form-container">
+      <h4 class="card-title">
+      <i class="bi bi-building-gear"></i> Empresa - Información Complementaria
+    </h4>
 
-<div class="form-container">
+    <p class="text-muted">
+      Complete la siguiente información sobre procesos y subprocesos</p>
+
 <form action="/guardar_proceso/{{ empresa.id_empresa }}" method="POST">
-<h2>Nuevo proceso</h2>
-<h3>{{ empresa.nombre_empresa }}</h3>
+
   <div class="input-group">
     <label>Subproceso / Área</label>
-    <input type="text" name="subproceso_area" required>
+    <input type="text" name="subproceso_area"  placeholder="Ingrese el subproceso o área específica" required>
   </div>
 
   <div class="input-group">
-    <label>Tipo proceso</label>
+    <label>Tipos de procesos</label>
     <select name="tipo_proceso">
+      <option value="">Seleccione el tipo de proceso...</option>
       <option>Estratégico</option>
       <option>Misional</option>
       <option>De Apoyo</option>

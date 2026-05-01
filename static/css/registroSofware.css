@@ -1,138 +1,137 @@
-:root {
-  --azul-oscuro: #1e3a8a;
-  --blanco: #ffffff;
-  --gris-claro: #f8f9fa;
-  --gris-medio: #d1d5db;
-  --rojo-accent: #dc2626;
-}
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+:root {
+  --main-color: #39A900;
+  --secondary-color: #012970;
+  --bg-color: #f6f9ff;
 }
 
 body {
-  background-color: var(--gris-claro);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  font-family: "Work Sans", sans-serif;
+  background: var(--bg-color);
+  color: #444;
+  padding: 20px 30px;
+}
+
+
+.mensaje-container {
+  margin-bottom: 15px;
+}
+
+.mensaje {
+  background: #d1e7dd;
+  color: #0f5132;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
 }
 
 .top-bar {
-  position: absolute;
-  top: 20px;
-  left: 20px;
+  margin-bottom: 15px;
 }
-
 
 .btn-volver {
   text-decoration: none;
-  background: var(--azul-oscuro);
-  color: var(--blanco);
-  padding: 8px 14px;
+  background-color: var(--main-color);
+  color: #fff;
+  padding: 8px 16px;
   border-radius: 6px;
-  font-size: 0.9rem;
+  font-size: 14px;
+  font-weight: 600;
   transition: 0.3s;
 }
 
 .btn-volver:hover {
-  background: #162c6e;
+  background-color: #0b2c1f;
 }
 
-/* CONTENEDOR FORM */
-form {
-  background: var(--blanco);
-  padding: 30px;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 420px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-}
-
-/* TITULOS */
-h2 {
-  position: absolute;
-  top: 80px;
-  width: 100%;
-  text-align: center;
-  color: var(--azul-oscuro);
-}
-
-h3 {
-  position: absolute;
-  top: 120px;
-  width: 100%;
-  text-align: center;
-  font-size: 1rem;
-  color: #555;
-}
-
-/* LABELS */
-label {
-  display: block;
-  margin-bottom: 10px;
+/* TITULO */
+.pagetitle h1 {
+  font-size: 20px;
   font-weight: 600;
-  color: var(--azul-oscuro);
+  color: var(--secondary-color);
+  margin-bottom: 5px;
+  margin-left: 250px;
+
 }
 
-/* CHECKBOX */
-input[type="checkbox"] {
-  margin-right: 8px;
-  transform: scale(1.1);
-  accent-color: var(--azul-oscuro);
+.pagetitle h3 {
+  font-size: 14px;
+  font-weight: bold;
+  color: #6c757d;
+  margin-left: 250px;
 }
 
-/* INPUT TEXTO */
-input[type="text"] {
+
+.form-container {
+  width: 600px;             
+  margin-top: 20px;
+  margin-left: 250px;
+  margin-right: auto;       
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0px 0 20px rgba(1, 41, 112, 0.1);
+}
+
+
+.card-title {
+  font-size: 20px;
+  color: var(--secondary-color);
+  margin-bottom: 5px;
+}
+
+.text-muted{
+  font-size: 13px;
+  color: #012970;
+}
+
+form label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 10px;
+  display: block;
+}
+
+/* INPUT */
+form input[type="text"] {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 20px;
-  border: 1px solid var(--gris-medio);
+  padding: 8px;
+  margin-top: 5px;
   border-radius: 6px;
-  font-size: 0.95rem;
-  transition: 0.3s;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  transition: 0.2s;
 }
 
-input[type="text"]:focus {
+form input[type="text"]:focus {
   outline: none;
-  border-color: var(--azul-oscuro);
-  box-shadow: 0 0 5px rgba(30, 58, 138, 0.2);
+  border-color: var(--main-color);
+  box-shadow: 0 0 5px rgba(57, 169, 0, 0.3);
 }
 
-/* BOTÓN */
+/* CHECKBOX (alineado bonito) */
+form input[type="checkbox"] {
+  margin-left: 8px;
+  transform: scale(1.2);
+  accent-color: var(--main-color);
+}
+
+/* BOTON */
 button {
-  width: 100%;
-  padding: 12px;
-  background-color: var(--azul-oscuro);
-  color: var(--blanco);
+  margin-top: 15px;
+  width: auto;
+  padding: 8px 20px;
+  background-color: var(--main-color);
+  color: #fff;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
+  border-radius: 6px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: 0.3s;
 }
 
 button:hover {
-  background-color: #162c6e;
-  transform: translateY(-2px);
-}
-
-/* ANIMACIÓN */
-form {
-  animation: fadeIn 0.4s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  background-color: #2a7900;
 }

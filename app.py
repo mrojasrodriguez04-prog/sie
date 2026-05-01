@@ -1,7 +1,8 @@
 from flask import Flask, request, render_template, redirect, session, url_for,flash
 from werkzeug.security import check_password_hash, generate_password_hash
 from models import db,TipoFlota, Empresario, Subsector, Ciudad, Empresa, Usuario, Sede,RedSocial, ProcesoEmpresarial, Cargo, Stakeholder,CanalVenta,Problematica,Infraestructura,SoftwareUsado
-
+from datetime import timedelta
+from datetime import datetime
 
 
 app= Flask(__name__)
@@ -12,7 +13,7 @@ db.init_app(app)
 
 TIPO_PERSONA = ['Natural','Jurídica']
 ROL_EMPRESARIO = ['Propietario','Representante Legal','Otro']
-
+app.permanent_session_lifetime = timedelta(days=7)
 @app.route("/")
 def inicio():
     return render_template("login.html")
@@ -29,11 +30,16 @@ def validar_login():
         session["usuario_id"] = usuario.id_usuario
         session["tipo_usuario"] = usuario.tipo_usuario
         session["nombre"] = usuario.nombres
+        recordar = request.form.get('recordar')
 
         if usuario.tipo_usuario == "admin":
             return redirect(url_for("panel"))
 
- 
+        if recordar:
+            session.permanent = True  # dura varios días
+        else:
+            session.permanent = False  # se borra al cerrar navegador
+
         return redirect(url_for("panel"))
 
     else:
@@ -43,11 +49,39 @@ def validar_login():
 
 @app.route("/panel")
 def panel():
+    ahora = datetime.now()
+
+    inicio_mes = ahora.replace(day=1, hour=0, minute=0, second=0)
+    inicio_dia = ahora.replace(hour=0, minute=0, second=0)
 
     if "usuario_id" not in session:
         return redirect(url_for("inicio"))
+        
+    total_empresarios = Empresario.query.count()
+    total_empresas = Empresa.query.count()
+    total_usuarios = Usuario.query.count()
 
-    return render_template("Panel.html", tipo=session["tipo_usuario"], nombre=session["nombre"])
+    nuevos_empresarios = Empresario.query.filter(
+        Empresario.fecha_registro >= inicio_mes
+    ).count()
+
+    nuevas_empresas = Empresa.query.filter(
+        Empresa.fecha_registro >= inicio_mes
+    ).count()
+
+    nuevos_usuarios = Usuario.query.filter(
+        Usuario.fecha_registro >= inicio_dia
+    ).count()
+
+
+    return render_template(
+        "Panel.html", tipo=session["tipo_usuario"], nombre=session["nombre"],
+        total_empresarios=total_empresarios,
+        total_empresas=total_empresas,
+        total_usuarios=total_usuarios,
+        nuevos_empresarios=nuevos_empresarios,
+        nuevas_empresas=nuevas_empresas,
+        nuevos_usuarios=nuevos_usuarios)
 
 
 #Usuario Registro

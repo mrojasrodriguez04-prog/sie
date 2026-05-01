@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-
+from datetime import datetime
 db = SQLAlchemy()
 
 class Usuario(db.Model):
@@ -13,6 +13,7 @@ class Usuario(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(255))
     tipo_usuario = db.Column(db.Enum('aprendiz','instructor','admin'))
+    fecha_registro = db.Column(db.DateTime, default=datetime.utcnow)
 class Empresario(db.Model):
     __tablename__ = 'empresario'
 
@@ -22,6 +23,7 @@ class Empresario(db.Model):
     correo_personal = db.Column(db.String(120), nullable=False)
     tipo_persona = db.Column(db.Enum('Natural','Jurídica'), nullable=False)
     rol_empresario = db.Column(db.Enum('Propietario','Representante Legal','Otro'), nullable=False)
+    fecha_registro = db.Column(db.DateTime, default=datetime.utcnow)
     
     empresas = db.relationship('Empresa', backref='empresario', cascade="all, delete")
 
@@ -77,6 +79,7 @@ class Empresa(db.Model):
     id_ciudad = db.Column(db.Integer,db.ForeignKey('ciudad.id_ciudad'),nullable=False)
     flota = db.relationship("TipoFlota", backref="empresa", uselist=False)
     stakeholders = db.relationship('Stakeholder', backref='empresa', cascade="all, delete")
+    fecha_registro = db.Column(db.DateTime, default=datetime.utcnow)
     canales = db.relationship('CanalVenta', backref='empresa', cascade="all, delete")
 class TipoFlota(db.Model):
     __tablename__ = "tipo_flota"

@@ -37,6 +37,10 @@
     <a href="{{ url_for('empresas_por_empresario', id=empresa.id_empresario) }}" class="btn-volver">
   Volver
 </a>
+ <div class="header-sena">
+  <img src="{{ url_for('static', filename='img/logo_sena.png') }}" class="logo-sena">
+  <span class="titulo-sena">Sistema de Información Empresarial</span>
+</div>
 <div class="table-container">
 <h2>Software usado</h2>
 <h3>{{ empresa.nombre_empresa }}</h3>
@@ -65,4 +69,47 @@
 </tr>
 {% endfor %}
 </table>
+ <div class="paginacion" id="paginacion"></div>
 </div>
+<script>
+let filas = document.querySelectorAll("table tr:not(:first-child)");
+
+let pagina = 1;
+let porPagina = 6;
+
+function mostrarPagina() {
+  let totalPaginas = Math.ceil(filas.length / porPagina);
+
+  filas.forEach((fila, i) => {
+    let inicio = (pagina - 1) * porPagina;
+    let fin = inicio + porPagina;
+
+    fila.style.display = (i >= inicio && i < fin) ? "" : "none";
+  });
+
+  renderPaginacion(totalPaginas);
+}
+
+function renderPaginacion(total) {
+  let contenedor = document.getElementById("paginacion");
+  contenedor.innerHTML = "";
+
+  for (let i = 1; i <= total; i++) {
+    let btn = document.createElement("button");
+    btn.innerText = i;
+
+    if (i === pagina) btn.classList.add("activo");
+
+    btn.onclick = () => {
+      pagina = i;
+      mostrarPagina();
+    };
+
+    contenedor.appendChild(btn);
+  }
+}
+
+mostrarPagina();
+</script>
+  </body>
+</html>

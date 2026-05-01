@@ -31,6 +31,7 @@ body {
   font-size: 18px;
 }
 
+
 /* BOTON VOLVER */
 .btn-volver {
   background: var(--verde-sena);
@@ -59,9 +60,20 @@ h2 {
   font-weight: 700;
 }
 
-h3 {
+h3, .breadcrumb {
   font-size: 14px;
   color: #6c757d;
+}
+
+/* BREADCRUMB */
+.breadcrumb a {
+  color: #6c757d;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.breadcrumb a:hover {
+  color: var(--verde-sena);
 }
 
 /* BOTON NUEVO */
@@ -73,6 +85,7 @@ h3 {
   border-radius: 20px;
   font-weight: 600;
   margin-bottom: 10px;
+  transition: 0.3s;
 }
 
 .btn-top button:hover {
@@ -85,7 +98,7 @@ table {
   border-collapse: collapse;
 }
 
-thead, table tr:first-child {
+thead {
   background: #f1f4f9;
 }
 
@@ -102,8 +115,7 @@ td {
   border-top: 1px solid #eee;
 }
 
-tbody tr:hover,
-table tr:hover {
+tbody tr:hover {
   background: #f9f9f9;
 }
 
@@ -121,6 +133,7 @@ td button {
 
 td button:hover {
   background: var(--verde-hover);
+  transform: translateY(-1px);
 }
 
 /* ELIMINAR */

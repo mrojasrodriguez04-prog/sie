@@ -1,61 +1,228 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap');
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f5f6fa;
-  color: #2f3640;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  font-family: 'Work Sans', sans-serif;
+  background:#f6f9ff;;
+  color: #444;
 }
 
-.container {
-  text-align: center;
-  background-color: #ffffff;
-  padding: 50px 40px;
-  border-radius: 15px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
-
-
-.container h1 {
-  font-size: 2.5rem;
-  margin-bottom: 40px;
-  color: #1e272e;
-  font-weight: 700;
-}
-
-.container a button {
-  display: block;
-  width: 220px;
-  padding: 12px 20px;
-  margin: 15px auto;
-  font-size: 1rem;
+/* TITULOS */
+.main-title {
+  color: #012970;
   font-weight: 600;
-  color: #fff;
-  background-color: #40739e; 
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  font-size: 26px;
 }
 
-.container a button:hover {
-  background-color: #273c75; 
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+.subtitle {
+  font-size: 17px;
+  color: #6c757d;
+}
+
+
+.card {
+  border: none;
+  border-radius: 10px;
+
+  background:  #ffffff;
+}
+
+.info-card {
+  width: 320px;
+  height: 160px;   
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+}
+
+
+
+.info-card h5 {
+  color: #012970;
+  
+  align-items: left;   
+  padding: 20px 0 15px 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+
+.card-data {
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+   gap: 10px;
+  margin-top: 5px;
+}
+
+.card-data i {
+  font-size: 28px;
+  color: #000;
+}
+
+.card-data h2 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: bold;
+  color: #012970;
+}
+
+
+.section-card h3 {
+  font-size: 20px;
+  color: #012970;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.section-card p {
+  font-size: 14px;
+}
+ 
+.gestion-container {
+  display: flex;
+  align-items: center;   
+  margin-bottom: auto;
+}
+
+
+.section-img {
+    width: 160px;
+  max-width: 100%;
+  height: auto;
+  flex-shrink: 0; 
+}
+
+.mensaje-container {
+  margin-bottom: 15px;
+}
+
+.mensaje {
+  background: #d1e7dd;
+  color: #0f5132;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+
+.gestion-text {
+  flex: 1;
+}
+
+
+.section-card {
+  border-radius: 10px;
+   width: 500px;
+  height: 200px; 
+}
+
+
+.btn-sena {
+  background-color: #39A900;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  font-size: 13px;
+  border-radius: 6px;
+  display: inline-block; 
+  width: auto; 
+}
+
+.btn-sena:hover {
+  background-color: #2a7900;
+}
+
+
+.section-card .btn {
+  margin-top: 10px;
+}
+.card-data small {
+  font-size: 12px;
+  display: block;
+  margin-top: 2px;
+
+}
+
+@media (max-width: 991px) {
+
+  .info-card {
+    width: 100%;
+    height: auto;
+    padding: 15px;
+  }
+
+  .section-card {
+    width: 100%;
+    height: auto;
+  }
+
+  .gestion-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .section-img {
+    width: 120px;
+    margin-bottom: 10px;
+  }
+
+  .card-data {
+    justify-content: center;
+  }
 }
 
 
 @media (max-width: 576px) {
-  .container {
-    padding: 30px 20px;
+
+  .main-title {
+    font-size: 20px;
+    text-align: center;
   }
 
-  .container a button {
+  .subtitle {
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .info-card {
     width: 100%;
-    font-size: 0.9rem;
+    height: auto;
+    padding: 12px;
+  }
+
+  .info-card h5 {
+    font-size: 16px;
+    padding: 5px 0;
+  }
+
+  .card-data h2 {
+    font-size: 22px;
+  }
+
+  .card-data i {
+    font-size: 22px;
+  }
+
+  .section-card {
+    width: 100%;
+    height: auto;
+    padding: 15px;
+  }
+
+  .gestion-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .section-img {
+    width: 100px;
+  }
+
+  .btn-sena {
+    width: 100%;
+    margin-bottom: 8px;
   }
 }

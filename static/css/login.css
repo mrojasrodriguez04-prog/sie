@@ -1,98 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap');
 
 :root {
-  --azul-oscuro: #1e3a8a;
-  --blanco: #ffffff;
-  --gris-claro: #f8f9fa;
-  --gris-medio: #d1d5db;
+  --verde: #39A900;
+  --azul: #012970;
+  --gris-borde: #d1d5db;
+  --gris-fondo: #f6f9ff;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Work Sans', sans-serif;
 }
 
-
 body {
-  background-color: var(--gris-claro);
+  background-color: var(--gris-fondo);
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
 
-
+/* CONTENEDOR */
 .login-container {
-  background: var(--blanco);
-  padding: 40px;
-  border-radius: 12px;
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  margin-bottom: 20px;
   width: 100%;
-  max-width: 350px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  box-shadow: 0px 0 30px rgba(1, 41, 112, 0.1);
+}
+
+/* TITULO */
+.login-container h3 {
   text-align: center;
+  color: var(--azul);
+  font-weight: 800;
+  margin-bottom: 30px;
 }
 
-
-.login-container h2 {
+/* SUBTEXTO */
+.login-container p {
+  text-align: center;
+  font-size: 15px;
+  color: #666;
   margin-bottom: 25px;
-  color: var(--azul-oscuro);
 }
 
-.mensaje-container {
-  position: absolute;
-  top: 20px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.mensaje {
-  background: #7a93d8;
-  color: #000;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: bold;
-}
-
+/* INPUTS */
 .input-group {
-  text-align: left;
-  margin-bottom: 15px;
+  margin-bottom: 18px;
 }
 
 .input-group label {
   display: block;
-  margin-bottom: 5px;
-  font-size: 0.9rem;
+  margin-bottom: 6px;
   font-weight: 600;
-  color: var(--azul-oscuro);
+  color: #333;
 }
 
 .input-group input {
   width: 100%;
   padding: 10px;
-  border: 1px solid var(--gris-medio);
+  border: 1px solid var(--gris-borde);
   border-radius: 6px;
+  font-size: 14px;
+  outline: none;
 }
 
+.input-group input:focus {
+  border-color: var(--verde);
+  box-shadow: 0 0 5px rgba(57, 169, 0, 0.2);
+}
 
+/* CHECKBOX */
+.recordar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-size: 15px;
+}
+
+/* BOTON */
 .login-container button {
   width: 100%;
   padding: 12px;
-  background-color: var(--azul-oscuro);
-  color: var(--blanco);
+  background-color: var(--verde);
+  color: #fff;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
+  border-radius: 6px;
+  font-weight: 500;
   cursor: pointer;
   transition: 0.3s;
 }
 
-
 .login-container button:hover {
-  background-color: #162c6e;
-  transform: translateY(-2px);
+  background-color: #2a7900;
+}
+/* TITULO CON ICONO */
+.titulo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
+.titulo i {
+  font-size: 24px;
+  color: #012970;
+}
 
+/* PASSWORD CON OJO */
+.password-container {
+  position: relative;
+}
+
+.password-container input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #555;
+}
+
+.toggle-password:hover {
+  color: #000;
+}

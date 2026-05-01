@@ -8,33 +8,51 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='css/login.css') }}"
     />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
   </head>
 
-  <body>
+<body>
     <div class="mensaje-container">
       {% with mensajes = get_flashed_messages() %} {% if mensajes %} {% for
       mensaje in mensajes %}
       <div class="mensaje">{{ mensaje }}</div>
       {% endfor %} {% endif %} {% endwith %}
     </div>
-    <div class="login-container">
-      <h2>Iniciar sesión</h2>
-      <h4>SIE - SISTEMA DE INFORMACIÓN EMPRESARIAL</h4>
-      <br />
 
-      <form action="/validar_login" method="POST">
-        <div class="input-group">
-          <label>Correo</label>
-          <input type="email" name="email" required />
-        </div>
+<div class="login-container">
 
-        <div class="input-group">
-          <label>Contraseña</label>
-          <input type="password" name="password" required />
-        </div>
+  <h3 class="titulo">
+    <i class="bi bi-person-circle"></i> Inicio de Sesión
+  </h3>
 
-        <button type="submit">Ingresar</button>
-      </form>
+  <p>Ingrese sus credenciales para acceder a SIE.</p>
+
+  <form action="/validar_login" method="POST">
+    
+    <div class="input-group">
+      <label>Usuario o Número de Identificación</label>
+      <input type="text" name="email" placeholder="Ingrese su usuario" required />
     </div>
-  </body>
+
+    <div class="input-group">
+      <label>Contraseña</label>
+
+      <div class="password-container">
+        <input type="password" id="password" name="password" placeholder="Ingrese su contraseña" required />
+        <span class="toggle-password">
+          <i class="bi bi-eye"></i>
+        </span>
+      </div>
+    </div>
+
+
+    <button type="submit">
+      <i class="bi bi-box-arrow-in-right"></i> Ingresar
+    </button>
+    
+  </form>
+</div>
+
+</body>
 </html>

@@ -34,6 +34,10 @@
     <div class="top-bar">
       <a href="/empresarios" class="btn-volver">Volver</a>
     </div>
+     <div class="header-sena">
+  <img src="{{ url_for('static', filename='img/logo_sena.png') }}" class="logo-sena">
+  <span class="titulo-sena">Sistema de Información Empresarial</span>
+</div>
     <div class="table-container">
       <h2>Lista de Empresas</h2>
 
@@ -43,7 +47,7 @@
       </h3>
 
       <a href="{{ url_for('registrar_empresa', id=empresario.id_empresario) }}"
-        ><button class="btn-registrar">Registrar empresa</button></a
+        ><button class="btn-registrar">+ Nueva empresa</button></a
       >
 
       <table>
@@ -117,13 +121,58 @@
             
             <td data-label="Acciones">
               <a href="/empresa/eliminar/{{ empresa.id_empresa }}">
-                <button>Eliminar</button>
+                <button class="eliminar">Eliminar</button>
               </a>
             </td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
+      <div class="paginacion" id="paginacion"></div>
     </div>
+
+<script>
+let filas = document.querySelectorAll("tbody tr");
+
+let pagina = 1;
+let porPagina = 4; 
+
+function mostrarPagina() {
+  let totalPaginas = Math.ceil(filas.length / porPagina);
+
+  filas.forEach((fila, i) => {
+    let inicio = (pagina - 1) * porPagina;
+    let fin = inicio + porPagina;
+
+    fila.style.display = (i >= inicio && i < fin) ? "" : "none";
+  });
+
+  renderPaginacion(totalPaginas);
+}
+
+function renderPaginacion(total) {
+  let contenedor = document.getElementById("paginacion");
+  contenedor.innerHTML = "";
+
+  for (let i = 1; i <= total; i++) {
+    let btn = document.createElement("button");
+    btn.innerText = i;
+
+    if (i === pagina) {
+      btn.classList.add("activo");
+    }
+
+    btn.onclick = () => {
+      pagina = i;
+      mostrarPagina();
+    };
+
+    contenedor.appendChild(btn);
+  }
+}
+
+
+mostrarPagina();
+</script>
   </body>
 </html>
