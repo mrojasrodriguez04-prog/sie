@@ -56,11 +56,13 @@ body {
 h2 {
   color: #012970;
   font-weight: 700;
+  margin-bottom: 10px;
 }
 
 h3, .breadcrumb {
   font-size: 14px;
   color: #6c757d;
+  margin-bottom: 10px;
 }
 
 /* BREADCRUMB */

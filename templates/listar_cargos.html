@@ -5,7 +5,14 @@
   <title>Procesos</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/cargo.css') }}">
 </head>
- <body>
+ <body> {% extends "base.html" %}
+
+{% block title %}
+Empresarios
+{% endblock %}
+
+{% block content %}
+
     {% with mensajes = get_flashed_messages() %} {% if mensajes %} {% for
     mensaje in mensajes %}
     <div
@@ -71,6 +78,8 @@
     {% endfor %}
   </tbody>
 </table>
+
+{% endblock %}
  <div class="paginacion" id="paginacion"></div>
 </div>
 <script>

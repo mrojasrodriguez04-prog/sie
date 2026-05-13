@@ -16,6 +16,13 @@
 </head>
 
 <body>
+  {% extends "base.html" %}
+
+{% block title %}
+Empresarios
+{% endblock %}
+
+{% block content %}
     <div class="mensaje-container">
       {% with mensajes = get_flashed_messages() %} {% if mensajes %} {% for
       mensaje in mensajes %}
@@ -58,3 +65,5 @@
 <button type="submit">Guardar</button>
 
 </form>
+      
+{% endblock %}

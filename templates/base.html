@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>{% block title %}SIE{% endblock %}</title>
+
+  <link rel="stylesheet"
+  href="{{ url_for('static', filename='css/base.css') }}">
+
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="header">
+
+  <div class="left-header">
+
+    <!-- BOTON HAMBURGUESA -->
+    <button class="menu-toggle" onclick="toggleSidebar()">
+      <i class="bi bi-list"></i>
+    </button>
+
+    <!-- LOGO -->
+    <img src="{{ url_for('static', filename='img/logo_sena.png') }}"
+    class="logo">
+
+    <h2>SIE</h2>
+
+  </div>
+
+<div class="header-right">
+  <div class="user-menu" onclick="toggleMenu()">
+    
+    <i class="bi bi-person-circle user-icon"></i>
+    <i class="bi bi-chevron-down arrow"></i>
+
+    <div class="dropdown-user" id="dropdownUser">
+      <span class="username">{{ nombre }}</span>
+
+      <hr>
+
+      <a href="/logout" class="logout">
+        <i class="bi bi-box-arrow-right"></i> Salir
+      </a>
+    </div>
+
+  </div>
+
+</header>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+
+  <ul>
+
+    <li>
+      <a href="/panel">
+        <i class="bi bi-grid"></i>
+        Inicio
+      </a>
+    </li>
+    <li class="menu-dropdown">
+
+  <div class="dropdown-btn" onclick="toggleEmpresaMenu()">
+
+    <div class="left-dropdown">
+      <i class="bi bi-buildings"></i>
+      <span>Módulo Empresa</span>
+    </div>
+
+    <i class="bi bi-chevron-down arrow-menu" id="arrowEmpresa"></i>
+
+  </div>
+
+  <ul class="submenu" id="submenuEmpresa">
+
+        <li>
+          <a href="{{ url_for('registrar_empresa', id=empresario.id_empresario) }}"
+          class="{% if request.path == '/registrar_empresario' %}active-link{% endif %}">
+
+            <span class="dot"></span>
+            Nueva Empresa
+
+          </a>
+        </li>
+
+        <li>
+          <a href="{{ url_for('empresas_por_empresario', id=empresario.id_empresario) }}"
+          class="{% if request.path == '/empresarios' %}active-link{% endif %}">
+
+            <span class="dot"></span>
+            Lista de Empresas
+
+          </a>
+        </li>
+
+      </ul>
+
+    </li>
+
+  </ul>
+
+</aside>
+
+
+<main class="main-content">
+
+  {% block content %}
+  {% endblock %}
+
+</main>
+
+<script>
+
+function toggleSidebar() {
+  document.getElementById("sidebar")
+  .classList.toggle("active");
+}
+
+</script>
+<script>
+
+function toggleEmpresaMenu(){
+
+  document.getElementById("submenuEmpresa")
+  .classList.toggle("show-submenu");
+
+  document.getElementById("arrowEmpresa")
+  .classList.toggle("rotate-arrow");
+}
+
+
+function toggleMenu() {
+  document.getElementById("dropdownUser").classList.toggle("active");
+}
+
+
+window.onclick = function(e) {
+  if (!e.target.closest('.user-menu')) {
+    document.getElementById("dropdownUser").classList.remove("active");
+  }
+}
+</script>
+</body>
+</html>

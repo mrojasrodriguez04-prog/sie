@@ -16,6 +16,14 @@
     />
   </head>
   <body>
+    {% extends "base.html" %}
+
+{% block title %}
+Empresarios
+{% endblock %}
+
+{% block content %}
+
     {% with mensajes = get_flashed_messages() %} {% if mensajes %} {% for
     mensaje in mensajes %}
     <div
@@ -46,9 +54,7 @@
         }}
       </h3>
 
-      <a href="{{ url_for('registrar_empresa', id=empresario.id_empresario) }}"
-        ><button class="btn-registrar">+ Nueva empresa</button></a
-      >
+     
 
       <table>
         <thead>
@@ -128,6 +134,8 @@
           {% endfor %}
         </tbody>
       </table>
+
+{% endblock %}
       <div class="paginacion" id="paginacion"></div>
     </div>
 

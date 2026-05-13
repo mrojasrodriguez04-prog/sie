@@ -15,17 +15,43 @@
 </head>
 
 <body>
+  <div class="top-header">
+
+  <div class="header-left">
+    <img src="{{ url_for('static', filename='img/logo_sena.png') }}" class="logos">
+    <span class="logo-text">SIE</span>
+  </div>
+  <div class="header-right">
+  <div class="user-menu" onclick="toggleMenu()">
+    
+    <i class="bi bi-person-circle user-icon"></i>
+    <i class="bi bi-chevron-down arrow"></i>
+
+    <div class="dropdown-user" id="dropdownUser">
+      <span class="username">{{ nombre }}</span>
+
+      <hr>
+
+      <a href="/logout" class="logout">
+        <i class="bi bi-box-arrow-right"></i> Salir
+      </a>
+    </div>
+
+  </div>
+</div>
+
+</div>
       {% with mensajes = get_flashed_messages() %} {% if mensajes %} {% for
     mensaje in mensajes %}
     <div
       style="
-        background: #7a93d8;
-        color: #000000;
-        padding: 12px;
-        border-radius: 6px;
-        margin-bottom: 15px;
-        font-weight: bold;
-      "
+         background: #d1e7dd;
+          color: #0f5132;
+          padding: 10px;
+          border-radius: 6px;
+          font-size: 14px;
+          margin-bottom: 15px;
+          "
     >
       {{ mensaje }}
     </div>
@@ -118,12 +144,23 @@
           <a href="/registro_usuario" class="btn btn-sena mb-2">Registrar Usuario</a>
         {% endif %}
 
-        <a href="/logout" class="btn btn-sena">Cerrar sesión</a>
       </div>
     </div>
 
   </div>
 
 </div>
+<script>
+function toggleMenu() {
+  document.getElementById("dropdownUser").classList.toggle("active");
+}
+
+
+window.onclick = function(e) {
+  if (!e.target.closest('.user-menu')) {
+    document.getElementById("dropdownUser").classList.remove("active");
+  }
+}
+</script>
 </body>
 </html>

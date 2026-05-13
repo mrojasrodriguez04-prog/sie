@@ -3,12 +3,12 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from models import db,TipoFlota, Empresario, Subsector, Ciudad, Empresa, Usuario, Sede,RedSocial, ProcesoEmpresarial, Cargo, Stakeholder,CanalVenta,Problematica,Infraestructura,SoftwareUsado
 from datetime import timedelta
 from datetime import datetime
+from config import Config
 
+app = Flask(__name__)
+app.config.from_object(Config)
 
-app= Flask(__name__)
-app.secret_key = 'proyecto_sie'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/sie' 
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = Config.SECRET_KEY
 db.init_app(app)
 
 TIPO_PERSONA = ['Natural','Jurídica']
@@ -394,10 +394,11 @@ def eliminar_red(id):
 def nuevo_proceso(id_empresa):
 
     empresa = Empresa.query.get(id_empresa)
+    empresario = Empresario.query.get(empresa.id_empresario)
 
     return render_template(
         "registro_proceso.html",
-        empresa=empresa
+        empresa=empresa, empresario=empresario
     )
 
 
@@ -422,11 +423,12 @@ def listar_procesos(id_empresa):
 
     empresa = Empresa.query.get(id_empresa)
     procesos = ProcesoEmpresarial.query.filter_by(id_empresa=id_empresa).all()
+    empresario = Empresario.query.get(empresa.id_empresario)
 
     return render_template(
         "listar_procesos.html",
         empresa=empresa,
-        procesos=procesos
+        procesos=procesos, empresario=empresario
     )
 
 @app.route("/proceso/eliminar/<int:id>")
@@ -449,11 +451,12 @@ def nuevo_cargo(id_proceso):
 
     proceso = ProcesoEmpresarial.query.get_or_404(id_proceso)
     empresa = Empresa.query.get(proceso.id_empresa)
+    empresario = Empresario.query.get(empresa.id_empresario)
 
     return render_template(
         "registro_cargo.html",
         proceso=proceso,
-        empresa=empresa
+        empresa=empresa, empresario=empresario
     )
 
 @app.route("/guardar_cargo/<int:id_proceso>", methods=["POST"])
@@ -477,6 +480,7 @@ def listar_cargos(id_proceso):
 
     proceso = ProcesoEmpresarial.query.get_or_404(id_proceso)
     empresa = Empresa.query.get(proceso.id_empresa)
+    empresario = Empresario.query.get(empresa.id_empresario)
 
     cargos = Cargo.query.filter_by(id_proceso=id_proceso).all()
 
@@ -484,7 +488,7 @@ def listar_cargos(id_proceso):
         "listar_cargos.html",
         proceso=proceso,
         empresa=empresa,
-        cargos=cargos
+        cargos=cargos, empresario=empresario
     )
 
 @app.route("/cargo/eliminar/<int:id>")
@@ -603,11 +607,12 @@ def eliminar_canal(id):
 def nuevo_problema(id_proceso):
     proceso = ProcesoEmpresarial.query.get_or_404(id_proceso)
     empresa = Empresa.query.get(proceso.id_empresa)
+    empresario = Empresario.query.get(empresa.id_empresario)
 
     return render_template(
         "registro_problema.html",
         proceso=proceso,
-        empresa=empresa
+        empresa=empresa, empresario=empresario
     )
 @app.route("/guardar_problema/<int:id_proceso>", methods=["POST"])
 def guardar_problema(id_proceso):
@@ -625,6 +630,7 @@ def guardar_problema(id_proceso):
 def listar_problemas(id_proceso):
     proceso = ProcesoEmpresarial.query.get_or_404(id_proceso)
     empresa = Empresa.query.get(proceso.id_empresa)
+    empresario = Empresario.query.get(empresa.id_empresario)
 
     problemas = Problematica.query.filter_by(id_proceso=id_proceso).all()
 
@@ -632,7 +638,7 @@ def listar_problemas(id_proceso):
         "listar_problemas.html",
         proceso=proceso,
         empresa=empresa,
-        problemas=problemas
+        problemas=problemas, empresario=empresario
     )
 
 @app.route("/problema/eliminar/<int:id>")

@@ -15,6 +15,32 @@
 </head>
 
 <body>
+ 
+<header class="header-sena">
+  
+  <div class="header-left">
+    <img src="{{ url_for('static', filename='img/logo_sena.png') }}" class="logo-sena">
+    <span class="titulo-sena">SIE</span>
+  </div>
+
+  <div class="header-right">
+    <div class="user-menu" onclick="toggleMenu()">
+      
+      <i class="bi bi-person-circle user-icon"></i>
+      <i class="bi bi-chevron-down arrow"></i>
+
+      <div class="dropdown-user" id="dropdownUser">
+      <span class="username">{{ nombre }}</span>
+        <hr>
+        <a href="/logout" class="logout">
+          <i class="bi bi-box-arrow-right"></i> Salir
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</header>
 
 <div class="container mt-4">
 
@@ -89,6 +115,16 @@
   </div>
 
 </div>
+<script>
+function toggleMenu() {
+  document.getElementById("dropdownUser").classList.toggle("active");
+}
 
+window.onclick = function(e) {
+  if (!e.target.closest('.user-menu')) {
+    document.getElementById("dropdownUser").classList.remove("active");
+  }
+}
+</script>
 </body>
 </html>
