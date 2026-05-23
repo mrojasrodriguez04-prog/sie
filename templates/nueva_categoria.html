@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Categorías</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/nuevacategoria.css') }}"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-+qdLaB5m0v1k1eE3fR2eT5t1A4J0t9jWbi7r1ikT9VgW8ZfFfJp8eFZk8GZP2F6R"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+ <div class="top-header">
+
+  <div class="header-left">
+    <img src="{{ url_for('static', filename='img/logo_sena.png') }}" class="logos">
+    <span class="logo-text">SIE</span>
+  </div>
+  <div class="header-right">
+  <div class="user-menu" onclick="toggleMenu()">
+    
+    <i class="bi bi-person-circle user-icon"></i>
+    <i class="bi bi-chevron-down arrow"></i>
+
+    <div class="dropdown-user" id="dropdownUser">
+      <span class="username">{{ nombre }}</span>
+
+      <hr>
+
+      <a href="/logout" class="logout">
+        <i class="bi bi-box-arrow-right"></i> Salir
+      </a>
+    </div>
+
+  </div>
+</div>
+
+</div>
+
+    {% with mensajes = get_flashed_messages() %} {% if mensajes %} {% for
+    mensaje in mensajes %}
+    <div
+      style="
+        background: #7a93d8;
+        color: #000000;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        font-weight: bold;
+      "
+    >
+      {{ mensaje }}
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
+   
+    </div>
+
+<div class="top-bar">
+  <a href="/categorias" class="btn-volver">
+    Volver
+  </a>
+</div>
+
+<h2>Nueva Categoría</h2>
+
+<div class="form-container">
+
+<form action="/guardar_categoria" method="POST">
+
+<div class="input-group">
+<label>Subsector</label>
+
+<select name="subsector">
+
+{% for s in subsectores %}
+<option value="{{ s.id_subsector }}">
+  {{ s.nombre_subsector }}
+</option>
+{% endfor %}
+
+</select>
+</div>
+
+<div class="input-group">
+<label>Categoría</label>
+
+<input
+type="text"
+name="categoria"
+required
+>
+</div>
+
+<button type="submit">
+Guardar
+</button>
+
+</form>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Categorías</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/categoria.css') }}"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-+qdLaB5m0v1k1eE3fR2eT5t1A4J0t9jWbi7r1ikT9VgW8ZfFfJp8eFZk8GZP2F6R"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+ <div class="top-header">
+
+  <div class="header-left">
+    <img src="{{ url_for('static', filename='img/logo_sena.png') }}" class="logos">
+    <span class="logo-text">SIE</span>
+  </div>
+  <div class="header-right">
+  <div class="user-menu" onclick="toggleMenu()">
+    
+    <i class="bi bi-person-circle user-icon"></i>
+    <i class="bi bi-chevron-down arrow"></i>
+
+    <div class="dropdown-user" id="dropdownUser">
+      <span class="username">{{ nombre }}</span>
+
+      <hr>
+
+      <a href="/logout" class="logout">
+        <i class="bi bi-box-arrow-right"></i> Salir
+      </a>
+    </div>
+
+  </div>
+</div>
+
+</div>
+
+    {% with mensajes = get_flashed_messages() %} {% if mensajes %} {% for
+    mensaje in mensajes %}
+    <div
+      style="
+        background: #7a93d8;
+        color: #000000;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        font-weight: bold;
+      "
+    >
+      {{ mensaje }}
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
+   
+    </div>
+   <div class="top-bar">
+  <a href="/panel" class="btn-volver">Volver</a>
+</div>
+ <div class="header-sena">
+  <img src="{{ url_for('static', filename='img/logo_sena.png') }}" class="logo-sena">
+  <span class="titulo-sena">Sistema de Información Empresarial</span>
+</div>
+<div class="table-container">
+
+<h2>Lista de Categorías</h2>
+
+<div class="btn-top">
+  <a href="/categoria/nueva">
+    <button class="btn-registrar">
+      + Nueva categoría
+    </button>
+  </a>
+</div>
+
+<table>
+
+<thead>
+<tr>
+  <th>Subsector</th>
+  <th>Categoría</th>
+  <th>Acciones</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for c in categorias %}
+<tr>
+
+<td>{{ c.subsector.nombre_subsector }}</td>
+
+<td>{{ c.nombre_categoria }}</td>
+
+<td>
+<a href="/categoria/eliminar/{{ c.id_categoria }}">
+<button style="background:red;color:white;">
+Eliminar
+</button>
+</a>
+</td>
+
+</tr>
+{% endfor %}
+
+</tbody>
+</table>
+<div class="paginacion" id="paginacion"></div>
+
+</div>
+    <script>
+let filas = document.querySelectorAll("tbody tr");
+
+let pagina = 1;
+let porPagina = 6;
+
+function mostrarPagina() {
+  let totalPaginas = Math.ceil(filas.length / porPagina);
+
+  filas.forEach((fila, i) => {
+    let inicio = (pagina - 1) * porPagina;
+    let fin = inicio + porPagina;
+
+    fila.style.display = (i >= inicio && i < fin) ? "" : "none";
+  });
+
+  renderPaginacion(totalPaginas);
+}
+
+function renderPaginacion(total) {
+  let contenedor = document.getElementById("paginacion");
+  contenedor.innerHTML = "";
+
+  for (let i = 1; i <= total; i++) {
+    let btn = document.createElement("button");
+    btn.innerText = i;
+
+    if (i === pagina) btn.classList.add("activo");
+
+    btn.onclick = () => {
+      pagina = i;
+      mostrarPagina();
+    };
+
+    contenedor.appendChild(btn);
+  }
+}
+
+mostrarPagina();
+</script>
+</body>
+</html>

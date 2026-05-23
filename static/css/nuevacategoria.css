@@ -1,0 +1,258 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap');
+
+:root{
+  --verde-sena:#39A900;
+  --verde-hover:#2d8700;
+  --gris-bg:#f4f6f9;
+  --gris-border:#dfe3e8;
+  --texto:#374151;
+  --azul:#012970;
+  --blanco:#fff;
+  --rojo:#dc3545;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: 'Work Sans', sans-serif;
+}
+
+body{
+  background:var(--gris-bg);
+  min-height:100vh;
+}
+
+/* ================= HEADER ================= */
+
+.top-header{
+  width:100%;
+  height:75px;
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 35px;
+  position:sticky;
+  top:0;
+  z-index:1000;
+}
+
+.header-left{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.logos{
+  width:42px;
+}
+
+.logo-text{
+  font-size:26px;
+  font-weight:bold;
+  color:var(--verde-sena);
+  letter-spacing:1px;
+}
+
+/* ================= USER ================= */
+
+.user-menu{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  cursor:pointer;
+}
+
+.user-icon{
+  font-size:38px;
+  color:var(--verde-sena);
+}
+
+.arrow{
+  font-size:18px;
+  color:#666;
+}
+
+.dropdown-user{
+  position:absolute;
+  top:55px;
+  right:0;
+  width:220px;
+  background:#fff;
+  border-radius:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.10);
+  padding:18px;
+  display:none;
+}
+
+.dropdown-user.active{
+  display:block;
+}
+
+.username{
+  display:block;
+  font-size:16px;
+  font-weight:700;
+  color:var(--azul);
+  margin-bottom:10px;
+}
+
+.dropdown-user hr{
+  border:none;
+  border-top:1px solid #e5e7eb;
+  margin:12px 0;
+}
+
+.logout{
+  text-decoration:none;
+  color:#444;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:15px;
+  font-weight:600;
+}
+
+.logout:hover{
+  color:var(--verde-sena);
+}
+
+/* ================= MENSAJES ================= */
+
+.flash{
+  width:90%;
+  max-width:1000px;
+  margin:20px auto;
+  background:#d1e7dd;
+  color:#0f5132;
+  padding:14px 18px;
+  border-radius:12px;
+  font-weight:600;
+}
+
+/* ================= BOTON VOLVER ================= */
+
+.top-bar{
+  width:90%;
+  max-width:1200px;
+  margin:30px auto 0;
+}
+
+.btn-volver{
+  text-decoration:none;
+  background:var(--verde-sena);
+  color:#fff;
+  padding:8px 20px;
+  border-radius:6px;
+  font-size:14px;
+  font-weight:700;
+  transition:.3s;
+  display:inline-block;
+  margin-bottom: 20px;
+}
+
+.btn-volver:hover{
+  background:var(--verde-hover);
+}
+
+/* ================= TITULO ================= */
+
+h2{
+      font-size: 20px;
+    font-weight: 600;
+    color: var(--azul);
+    margin-bottom: 5px;
+    margin-left: 250px;
+}
+
+/* ================= FORMULARIO ================= */
+
+.form-container {
+    width: 600px;
+    margin-top: 20px;
+    margin-left: 250px;
+    margin-right: auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 0 20px rgba(1, 41, 112, 0.1);}
+
+.input-group{
+  margin-bottom:28px;
+}
+
+.input-group label{
+  display:block;
+  margin-bottom:10px;
+  font-size:14px;
+  font-weight:700;
+  color:var(--texto);
+}
+
+.input-group input,
+.input-group select{
+  width:100%;
+  height:40px;
+  border:1px solid var(--gris-border);
+  border-radius:14px;
+  padding:0 18px;
+  font-size:16px;
+  transition:.3s;
+  background:#fff;
+}
+
+.input-group input:focus,
+.input-group select:focus{
+  outline:none;
+  border-color:var(--verde-sena);
+  box-shadow:0 0 0 4px rgba(57,169,0,.12);
+}
+
+/* ================= BOTON ================= */
+
+button{
+  border:none;
+  background:var(--verde-sena);
+  color:#fff;
+  padding:8px 20px;
+  border-radius:6px;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.3s;
+}
+
+button:hover{
+  background:var(--verde-hover);
+  transform:translateY(-2px);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:768px){
+
+  .top-header{
+    padding:0 18px;
+  }
+
+  .logo-text{
+    font-size:30px;
+  }
+
+  h2{
+    font-size:30px;
+  }
+
+  .form-container{
+    padding:28px 20px;
+  }
+
+  .btn-volver{
+    width:100%;
+    text-align:center;
+  }
+
+}

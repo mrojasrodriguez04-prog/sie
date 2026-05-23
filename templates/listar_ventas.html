@@ -1,0 +1,136 @@
+
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+
+  <title>Competidores</title>
+
+  <link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/sede.css') }}">
+</head>
+
+<body>
+       {% extends "base.html" %}
+
+{% block title %}
+Empresarios
+{% endblock %}
+
+{% block content %}
+
+
+    {% with mensajes = get_flashed_messages() %} {% if mensajes %} {% for
+    mensaje in mensajes %}
+    <div
+      style="
+        background: #7a93d8;
+        color: #000000;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        font-weight: bold;
+      "
+    >
+      {{ mensaje }}
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
+<div class="top-bar">
+
+<a
+href="/empresa/{{ empresa.id_empresa }}/productos"
+class="btn-volver">
+
+Volver
+
+</a>
+
+</div>
+ <div class="header-sena">
+  <img src="{{ url_for('static', filename='img/logo_sena.png') }}" class="logo-sena">
+  <span class="titulo-sena">Sistema de Información Empresarial</span>
+</div>
+<div class="table-container">
+
+<h2>Histórico de Ventas</h2>
+
+<h3>
+Empresa:
+{{ empresa.nombre_empresa }} - Empresario:
+{{ empresario.nombres_completos }}
+{{ empresario.apellidos }}
+</h3>
+
+<h3>
+Producto / Servicio:
+{{ producto.nombre_producto }}
+</h3>
+
+
+
+<div class="btn-top">
+
+<a href="/venta/nueva/{{ producto.id_producto }}">
+
+<button class="btn-registrar">
++ Nuevo histórico
+</button>
+
+</a>
+
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+<th>Fecha inicio</th>
+<th>Fecha fin</th>
+<th>Unidades</th>
+<th>Valor ventas</th>
+<th>Acciones</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for v in ventas %}
+
+<tr>
+
+<td>{{ v.fecha_inicio }}</td>
+
+<td>{{ v.fecha_fin }}</td>
+
+<td>{{ v.unidades_vendidas }}</td>
+
+<td>${{ v.valor_ventas }}</td>
+
+<td>
+
+<a href="/venta/eliminar/{{ v.id_venta }}">
+
+<button style="background:red;color:white;">
+Eliminar
+</button>
+
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+{% endblock %}
+</div>
+
+</body>
+</html>

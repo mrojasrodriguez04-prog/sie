@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+
+  <title>Nuevo competidor</title>
+
+  <link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/nuevoproducto.css') }}">
+</head>
+
+<body>
+
+    {% extends "base.html" %}
+
+{% block title %}
+Empresarios
+{% endblock %}
+
+{% block content %}
+
+    {% with mensajes = get_flashed_messages() %} {% if mensajes %} {% for
+    mensaje in mensajes %}
+    <div
+      style="
+        background: #7a93d8;
+        color: #000000;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        font-weight: bold;
+      "
+    >
+      {{ mensaje }}
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
+<div class="top-bar">
+
+<a
+href="/empresa/{{ empresa.id_empresa }}/competidores"
+class="btn-volver">
+
+Volver
+
+</a>
+
+</div>
+
+<h1>Nuevo Competidor</h1>
+
+<h3>{{ empresa.nombre_empresa }}</h3>
+
+<h3 >
+{{ empresario.nombres_completos }}
+{{ empresario.apellidos }}
+</h3>
+
+<div class="form-container">
+
+<form
+action="/guardar_competidor/{{ empresa.id_empresa }}"
+method="POST">
+
+<div class="input-group">
+
+<label>
+Seleccione competidor
+</label>
+
+<select
+name="empresa_competidora"
+required>
+
+<option value="">
+Seleccione
+</option>
+
+{% for e in empresas_subsector %}
+
+<option value="{{ e.id_empresa }}">
+
+{{ e.nombre_empresa }}
+
+</option>
+
+{% endfor %}
+
+</select>
+
+</div>
+
+<button type="submit">
+Guardar
+</button>
+
+</form>
+    {% endblock %}
+</div>
+
+</body>
+</html>

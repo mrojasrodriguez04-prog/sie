@@ -50,11 +50,16 @@ body {
 
 /* CONTENEDOR */
 .table-container {
+
   background: white;
-  padding: 15px;
-  border-radius: 12px;
-  box-shadow: 0px 0 20px rgba(1, 41, 112, 0.1);
+  padding: 20px;
+  border-radius: 18px;
+  box-shadow: 0px 0 20px rgba(1, 41, 112, 0.08);
+
+  overflow-x: auto;
+  width: 100%;
 }
+
 
 /* TITULOS */
 h2 {
@@ -85,28 +90,28 @@ h3 {
 }
 
 /* TABLA */
-table {
+
+  table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 1700px;
 }
+
 
 thead {
   background: #f1f4f9;
 }
 
 th {
-  padding: 8px;
-  font-size: 13px;
-  color: #012970;
-  text-align: left;
+  padding: 10px;
+  font-size: 12px;
+  white-space: nowrap;
 }
-
 td {
-  padding: 8px;
-  font-size: 13px;
+  padding: 10px;
+  font-size: 12px;
   border-top: 1px solid #eee;
 }
-
 /* HOVER */
 tbody tr:hover {
   background: #f9f9f9;
@@ -117,12 +122,11 @@ td button {
   background: var(--verde-sena);
   color: white;
   border: none;
-  padding: 6px 14px;
-  border-radius: 20px; /* 🔥 ovalado */
-  font-size: 12px;
-  margin: 2px;
+  padding: 5px 10px;
+  border-radius: 16px;
+  font-size: 11px;
   font-weight: 600;
-  transition: 0.3s;
+  min-width: 85px;
 }
 
 /* HOVER */

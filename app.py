@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, session, url_for,flash
 from werkzeug.security import check_password_hash, generate_password_hash
-from models import db,TipoFlota, Empresario, Subsector, Ciudad, Empresa, Usuario, Sede,RedSocial, ProcesoEmpresarial, Cargo, Stakeholder,CanalVenta,Problematica,Infraestructura,SoftwareUsado
+from models import db,TipoFlota, Competidor,ProductoServicio,HistoricoVentas, CategoriaProductoServicio, Empresario, Subsector, Ciudad, Empresa, Usuario, Sede,RedSocial, ProcesoEmpresarial, Cargo, Stakeholder,CanalVenta,Problematica,Infraestructura,SoftwareUsado
 from datetime import timedelta
 from datetime import datetime
 from config import Config
@@ -753,5 +753,325 @@ def eliminar_software(id):
     flash("Eliminado")
     return redirect(request.referrer)
 
+
+@app.route("/categorias")
+def categorias():
+
+    if session.get("tipo_usuario") != "admin":
+        return redirect(url_for("panel"))
+
+    categorias = CategoriaProductoServicio.query.all()
+
+    return render_template(
+        "categorias.html",
+        categorias=categorias
+    )
+
+
+@app.route("/categoria/nueva")
+def nueva_categoria():
+
+    if session.get("tipo_usuario") != "admin":
+        return redirect(url_for("panel"))
+
+    subsectores = Subsector.query.all()
+
+    return render_template(
+        "nueva_categoria.html",
+        subsectores=subsectores
+    )
+
+
+@app.route("/guardar_categoria", methods=["POST"])
+def guardar_categoria():
+
+    if session.get("tipo_usuario") != "admin":
+        return redirect(url_for("panel"))
+
+    nueva = CategoriaProductoServicio(
+        id_subsector=request.form["subsector"],
+        nombre_categoria=request.form["categoria"]
+    )
+
+    db.session.add(nueva)
+    db.session.commit()
+
+    flash("Categoría registrada correctamente")
+
+    return redirect(url_for("categorias"))
+
+@app.route("/categoria/eliminar/<int:id>")
+def eliminar_categoria(id):
+
+    if session.get("tipo_usuario") != "admin":
+        return redirect(url_for("panel"))
+
+    categoria = CategoriaProductoServicio.query.get(id)
+
+    db.session.delete(categoria)
+    db.session.commit()
+
+    flash("Categoría eliminada")
+
+    return redirect(url_for("categorias"))
+
+@app.route("/empresa/<int:id>/productos")
+def listar_productos(id):
+
+    empresa = Empresa.query.get(id)
+
+    productos = ProductoServicio.query.filter_by(
+        id_empresa=id
+    ).all()
+
+    empresario = Empresario.query.get(
+        empresa.id_empresario
+    )
+
+    return render_template(
+        "listar_productos.html",
+        empresa=empresa,
+        empresario=empresario,
+        productos=productos
+    )
+
+@app.route("/producto/nuevo/<int:id_empresa>")
+def nuevo_producto(id_empresa):
+
+    empresa = Empresa.query.get(id_empresa)
+
+    empresario = Empresario.query.get(
+        empresa.id_empresario
+    )
+
+    categorias = CategoriaProductoServicio.query.filter_by(
+        id_subsector=empresa.id_subsector
+    ).all()
+
+    return render_template(
+        "nuevo_producto.html",
+        empresa=empresa,
+        empresario=empresario,
+        categorias=categorias
+    )
+
+@app.route("/guardar_producto/<int:id_empresa>", methods=["POST"])
+def guardar_producto(id_empresa):
+
+    nuevo = ProductoServicio(
+
+        id_empresa=id_empresa,
+
+        id_categoria=request.form["categoria"],
+
+        nombre_producto=request.form["nombre"],
+
+        precio=request.form["precio"],
+
+        fecha_precio=request.form["fecha"]
+    )
+
+    db.session.add(nuevo)
+    db.session.commit()
+
+    flash("Producto registrado")
+
+    return redirect(
+        url_for(
+            "listar_productos",
+            id=id_empresa
+        )
+    )
+
+@app.route("/producto/eliminar/<int:id>")
+def eliminar_producto(id):
+
+    producto = ProductoServicio.query.get(id)
+
+    id_empresa = producto.id_empresa
+
+    db.session.delete(producto)
+    db.session.commit()
+
+    flash("Producto eliminado")
+
+    return redirect(
+        url_for(
+            "listar_productos",
+            id=id_empresa
+        )
+    )
+
+@app.route("/producto/<int:id>/ventas")
+def listar_ventas(id):
+
+    producto = ProductoServicio.query.get(id)
+
+    empresa = Empresa.query.get(
+        producto.id_empresa
+    )
+
+    empresario = Empresario.query.get(
+        empresa.id_empresario
+    )
+
+    ventas = HistoricoVentas.query.filter_by(
+        id_producto=id
+    ).all()
+
+    return render_template(
+        "listar_ventas.html",
+        producto=producto,
+        empresa=empresa,
+        empresario=empresario,
+        ventas=ventas
+    )
+@app.route("/venta/nueva/<int:id_producto>")
+def nueva_venta(id_producto):
+
+    producto = ProductoServicio.query.get(id_producto)
+
+    empresa = Empresa.query.get(
+        producto.id_empresa
+    )
+
+    empresario = Empresario.query.get(
+        empresa.id_empresario
+    )
+
+    return render_template(
+        "nueva_venta.html",
+        producto=producto,
+        empresa=empresa,
+        empresario=empresario
+    )
+
+@app.route("/guardar_venta/<int:id_producto>", methods=["POST"])
+def guardar_venta(id_producto):
+
+    nueva = HistoricoVentas(
+
+        id_producto=id_producto,
+
+        fecha_inicio=request.form["fecha_inicio"],
+
+        fecha_fin=request.form["fecha_fin"],
+
+        unidades_vendidas=request.form["unidades"],
+
+        valor_ventas=request.form["valor"]
+    )
+
+    db.session.add(nueva)
+    db.session.commit()
+
+    flash("Histórico registrado")
+
+    return redirect(
+        url_for(
+            "listar_ventas",
+            id=id_producto
+        )
+    )
+
+@app.route("/venta/eliminar/<int:id>")
+def eliminar_venta(id):
+
+    venta = HistoricoVentas.query.get(id)
+
+    id_producto = venta.id_producto
+
+    db.session.delete(venta)
+    db.session.commit()
+
+    flash("Histórico eliminado")
+
+    return redirect(
+        url_for(
+            "listar_ventas",
+            id=id_producto
+        )
+    )
+
+@app.route("/empresa/<int:id>/competidores")
+def listar_competidores(id):
+
+    empresa = Empresa.query.get(id)
+
+    empresario = Empresario.query.get(
+        empresa.id_empresario
+    )
+
+    competidores = Competidor.query.filter_by(
+        id_empresa=id
+    ).all()
+
+    return render_template(
+        "listar_competidores.html",
+        empresa=empresa,
+        empresario=empresario,
+        competidores=competidores
+    )
+@app.route("/competidor/nuevo/<int:id_empresa>")
+def nuevo_competidor(id_empresa):
+
+    empresa = Empresa.query.get(id_empresa)
+
+    empresario = Empresario.query.get(
+        empresa.id_empresario
+    )
+
+    empresas_subsector = Empresa.query.filter(
+        Empresa.id_subsector == empresa.id_subsector,
+        Empresa.id_empresa != empresa.id_empresa
+    ).all()
+
+    return render_template(
+        "nuevo_competidor.html",
+        empresa=empresa,
+        empresario=empresario,
+        empresas_subsector=empresas_subsector
+    )
+@app.route("/guardar_competidor/<int:id_empresa>", methods=["POST"])
+def guardar_competidor(id_empresa):
+
+    nuevo = Competidor(
+
+        id_empresa=id_empresa,
+
+        id_empresa_competidora=request.form[
+            "empresa_competidora"
+        ]
+    )
+
+    db.session.add(nuevo)
+    db.session.commit()
+
+    flash("Competidor agregado")
+
+    return redirect(
+        url_for(
+            "listar_competidores",
+            id=id_empresa
+        )
+    )
+@app.route("/competidor/eliminar/<int:id>")
+def eliminar_competidor(id):
+
+    competidor = Competidor.query.get(id)
+
+    id_empresa = competidor.id_empresa
+
+    db.session.delete(competidor)
+    db.session.commit()
+
+    flash("Competidor eliminado")
+
+    return redirect(
+        url_for(
+            "listar_competidores",
+            id=id_empresa
+        )
+    )
 if __name__ == "__main__":
     app.run(debug=True)

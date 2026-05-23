@@ -72,6 +72,8 @@ Empresarios
             <th>Infraestructura</th>
             <th>Software</th>
             <th>Procesos</th>
+            <th>Productos-Servicios</th>
+            <th>Competidores</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -124,6 +126,18 @@ Empresarios
                 <button>Ver procesos</button>
               </a>
             </td>
+            <td>
+              <a href="/empresa/{{ empresa.id_empresa }}/productos">
+                <button>Ver productos</button>
+              </a>
+            </td>
+            <td>
+              <a href="/empresa/{{ empresa.id_empresa }}/competidores">
+                <button>
+                  Ver competidores
+                </button>
+              </a>
+            </td>
             
             <td data-label="Acciones">
               <a href="/empresa/eliminar/{{ empresa.id_empresa }}">
@@ -143,7 +157,7 @@ Empresarios
 let filas = document.querySelectorAll("tbody tr");
 
 let pagina = 1;
-let porPagina = 4; 
+let porPagina = 3; 
 
 function mostrarPagina() {
   let totalPaginas = Math.ceil(filas.length / porPagina);

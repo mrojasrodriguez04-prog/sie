@@ -166,3 +166,109 @@ class SoftwareUsado(db.Model):
     nombre_software = db.Column(db.String(120))
 
     empresa = db.relationship("Empresa", backref="softwares")
+
+
+class CategoriaProductoServicio(db.Model):
+    __tablename__ = "categoria_producto_servicio"
+
+    id_categoria = db.Column(db.Integer, primary_key=True)
+
+    id_subsector = db.Column(
+        db.Integer,
+        db.ForeignKey("subsector.id_subsector")
+    )
+
+    nombre_categoria = db.Column(db.String(120))
+
+    subsector = db.relationship(
+        "Subsector",
+        backref="categorias"
+    )
+
+class ProductoServicio(db.Model):
+    __tablename__ = "producto_servicio"
+
+    id_producto = db.Column(db.Integer, primary_key=True)
+
+    id_empresa = db.Column(
+        db.Integer,
+        db.ForeignKey("empresa.id_empresa")
+    )
+
+    id_categoria = db.Column(
+        db.Integer,
+        db.ForeignKey("categoria_producto_servicio.id_categoria")
+    )
+
+    nombre_producto = db.Column(db.String(120))
+
+    precio = db.Column(db.Numeric(10,2))
+
+    fecha_precio = db.Column(db.Date)
+
+    empresa = db.relationship(
+        "Empresa",
+        backref="productos"
+    )
+
+    categoria = db.relationship(
+        "CategoriaProductoServicio",
+        backref="productos"
+    )
+
+
+class HistoricoVentas(db.Model):
+
+    __tablename__ = "historico_ventas"
+
+    id_venta = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    id_producto = db.Column(
+        db.Integer,
+        db.ForeignKey("producto_servicio.id_producto")
+    )
+
+    fecha_inicio = db.Column(db.Date)
+
+    fecha_fin = db.Column(db.Date)
+
+    unidades_vendidas = db.Column(db.Integer)
+
+    valor_ventas = db.Column(db.Numeric(12,2))
+
+    producto = db.relationship(
+        "ProductoServicio",
+        backref="historico_ventas"
+    )
+
+class Competidor(db.Model):
+
+    __tablename__ = "competidor"
+
+    id_competidor = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    id_empresa = db.Column(
+        db.Integer,
+        db.ForeignKey("empresa.id_empresa")
+    )
+
+    id_empresa_competidora = db.Column(
+        db.Integer,
+        db.ForeignKey("empresa.id_empresa")
+    )
+
+    empresa = db.relationship(
+        "Empresa",
+        foreign_keys=[id_empresa]
+    )
+
+    empresa_competidora = db.relationship(
+        "Empresa",
+        foreign_keys=[id_empresa_competidora]
+    )
