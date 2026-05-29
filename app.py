@@ -4,6 +4,8 @@ from models import db,TipoFlota, Competidor,ProductoServicio,HistoricoVentas, Ca
 from datetime import timedelta
 from datetime import datetime
 from config import Config
+from sqlalchemy import distinct
+from flask import jsonify
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -1073,5 +1075,197 @@ def eliminar_competidor(id):
             id=id_empresa
         )
     )
+
+
+@app.route("/consulta/ventas")
+def consulta_ventas():
+
+    categorias = CategoriaProductoServicio.query.all()
+
+    return render_template(
+        "consulta_ventas.html",
+        categorias=categorias
+    )
+
+@app.route("/productos/categoria/<int:id_categoria>")
+def productos_por_categoria(id_categoria):
+
+    productos = db.session.query(
+        distinct(ProductoServicio.nombre_producto)
+    ).filter(
+        ProductoServicio.id_categoria == id_categoria
+    ).all()
+
+    lista = [p[0] for p in productos]
+    print(lista)
+    return jsonify(lista)
+
+
+from collections import defaultdict
+
+@app.route("/consulta/resultados", methods=["POST"])
+def resultado_consulta():
+
+    id_categoria = request.form["categoria"]
+
+    nombre_producto = request.form["producto"]
+
+    fecha_inicio = request.form["fecha_inicio"]
+
+    fecha_fin = request.form["fecha_fin"]
+
+    productos = ProductoServicio.query.filter(
+
+        ProductoServicio.id_categoria == id_categoria,
+
+        ProductoServicio.nombre_producto == nombre_producto
+
+    ).all()
+
+    meses = [
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+    ]
+
+    labels = []
+
+    datasets = []
+
+    resumen = []
+
+    colores = [
+        "blue",
+        "green",
+        "red",
+        "purple",
+        "orange",
+        "brown",
+        "black",
+        "pink",
+        "cyan",
+        "gray"
+    ]
+
+    for i, producto in enumerate(productos):
+
+        empresa = producto.empresa
+
+        ventas = HistoricoVentas.query.filter(
+
+            HistoricoVentas.id_producto == producto.id_producto,
+
+            HistoricoVentas.fecha_inicio >= fecha_inicio,
+
+            HistoricoVentas.fecha_fin <= fecha_fin
+
+        ).order_by(
+            HistoricoVentas.fecha_inicio
+        ).all()
+
+        data = []
+
+        fechas_empresa = []
+
+        for venta in ventas:
+
+            mes = meses[
+                venta.fecha_inicio.month - 1
+            ]
+
+            fechas_empresa.append(
+                mes
+            )
+
+            data.append(
+                venta.unidades_vendidas
+            )
+
+            resumen.append({
+
+                "fecha":
+                f"{mes} {venta.fecha_inicio.year}",
+
+                "empresa":
+                empresa.nombre_empresa,
+
+                "unidades":
+                venta.unidades_vendidas,
+
+                "color":
+                colores[i % len(colores)]
+
+            })
+
+        # SI SOLO HAY UNA VENTA
+        # DUPLICAMOS EL PUNTO
+        # PARA QUE SE TRACE UNA LÍNEA
+
+        if len(ventas) == 1:
+
+            fechas_empresa.append(
+                fechas_empresa[0]
+            )
+
+            data.append(
+                data[0]
+            )
+
+        if len(fechas_empresa) > len(labels):
+
+            labels = fechas_empresa
+
+        datasets.append({
+
+            "label":
+            empresa.nombre_empresa,
+
+            "data":
+            data,
+
+            "borderColor":
+            colores[i % len(colores)],
+
+            "backgroundColor":
+            colores[i % len(colores)],
+
+            "fill":
+            False,
+
+            "tension":
+            0.4,
+
+            "pointRadius":
+            5,
+
+            "borderWidth":
+            3
+
+        })
+
+    return render_template(
+
+        "resultado_consulta.html",
+
+        labels=labels,
+
+        datasets=datasets,
+
+        resumen=resumen
+
+    )
+
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Consulta Ventas</title>
+
+<link
+rel="stylesheet"
+href="{{ url_for('static', filename='css/consultaventa.css') }}"
+>
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+</head>
+<body>
+
+
+<div class="page-header">
+
+<h1 class="page-title">
+Módulo Consultas
+</h1>
+
+<div class="breadcrumb">
+<a href="/panel">Inicio</a> / Análisis de Ventas
+</div>
+
+</div>
+
+<div class="container">
+
+<div class="analysis-title">
+  <i class="bi bi-graph-up"></i>
+  <span>Análisis de Ventas</span>
+</div>
+
+<p class="description">
+Use los filtros para consultar ventas históricas de productos o servicios,
+incluyendo competidores y canales de distribución.
+</p>
+
+<form action="/consulta/resultados" method="POST">
+
+<div class="form-row">
+
+<div class="form-group">
+<label>Categoría principal</label>
+
+<select id="categoria" name="categoria">
+
+<option value="">Seleccione</option>
+
+{% for c in categorias %}
+<option value="{{ c.id_categoria }}">
+{{ c.nombre_categoria }}
+</option>
+{% endfor %}
+
+</select>
+</div>
+
+<div class="form-group">
+<label>Producto/Servicio más importante</label>
+
+<select id="producto" name="producto">
+</select>
+</div>
+
+</div>
+
+<div class="form-row">
+
+<div class="form-group">
+<label>Fecha inicio</label>
+
+<input
+type="date"
+name="fecha_inicio"
+required
+>
+</div>
+
+<div class="form-group">
+<label>Fecha fin</label>
+
+<input
+type="date"
+name="fecha_fin"
+required
+>
+</div>
+
+</div>
+
+<div class="buttons">
+
+<button type="submit" class="btn-consultar">
+Consultar
+</button>
+
+<button type="reset" class="btn-limpiar">
+Limpiar
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+<script>
+
+const categoria = document.getElementById("categoria");
+
+categoria.addEventListener("change", async () => {
+
+const id = categoria.value;
+
+const response = await fetch(
+`/productos/categoria/${id}`
+);
+
+const data = await response.json();
+
+const producto = document.getElementById("producto");
+
+producto.innerHTML = "";
+
+data.forEach(p => {
+
+producto.innerHTML += `
+<option value="${p}">
+${p}
+</option>
+`;
+
+});
+
+});
+
+</script>
+
+</body>
+</html>

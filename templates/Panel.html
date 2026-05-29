@@ -111,43 +111,93 @@
     </div>
 
   </div>
+<div class="row mt-5">
 
-  <div class="row mt-5">
-    <div class="col-md-6">
-  <div class="card section-card p-4">
+  <!-- COLUMNA IZQUIERDA -->
+  <div class="col-md-6">
 
-    <div class="gestion-container">
-      
-   
-      <img src="{{ url_for('static', filename='img/logo_sena.png') }}" 
-           class="section-img" alt="Gestión">
+    <!-- GESTION -->
+    <div class="card section-card p-4 mb-4">
 
-   
-      <div class="gestion-text">
-        <h3>Gestión de Empresarios</h3>
-        <p class="fw-bold">Registro y administración de empresarios y empresas.</p>
+      <div class="gestion-container">
 
-        <a href="/registrar_empresario" class="btn btn-sena me-2">Nuevo Registro</a>
-        <a href="/empresarios" class="btn btn-sena">Ver Listado</a>
+        <img src="{{ url_for('static', filename='img/logo_sena.png') }}"
+        class="section-img">
+
+        <div class="gestion-text">
+
+          <h3>Gestión de Empresarios</h3>
+
+          <p class="fw-bold">
+            Registro y administración de empresarios y empresas.
+          </p>
+
+          <a href="/registrar_empresario"
+          class="btn btn-sena me-2">
+            Nuevo Registro
+          </a>
+
+          <a href="/empresarios"
+          class="btn btn-sena">
+            Ver Listado
+          </a>
+
+        </div>
+
       </div>
 
     </div>
 
-  </div>
-</div>
-    <div class="col-md-6">
-      <div class="card section-card p-4">
-        
-        <h3>Opciones</h3>
+    <!-- OPCIONES -->
+    <div class="card section-card p-4">
 
-        {% if tipo == "admin" %}
-          <a href="/registro_usuario" class="btn btn-sena mb-2">Registrar Usuario</a>
-          <a href="/categorias"class="btn btn-sena mb-2">
-            Categorías
+      <h3>Opciones</h3>
+
+      {% if tipo == "admin" %}
+
+      <a href="/registro_usuario"
+      class="btn btn-sena mb-3">
+        Registrar Usuario
+      </a>
+
+      <a href="/categorias"
+      class="btn btn-sena">
+        Categorías
+      </a>
+
+      {% endif %}
+
+    </div>
+
+  </div>
+
+  <!-- COLUMNA DERECHA -->
+  <div class="col-md-6">
+
+    <div class="card section-card p-4">
+
+      <div class="gestion-container">
+
+        <img src="{{ url_for('static', filename='img/logo_sena.png') }}"
+        class="section-img">
+
+        <div class="gestion-text">
+
+          <h3>Consultas & Análisis</h3>
+
+          <p class="fw-bold">
+            Filtrado, estadísticas y análisis de datos empresariales.
+          </p>
+
+          <a href="/consulta/ventas"
+          class="btn btn-sena">
+            Ingresar
           </a>
-        {% endif %}
+
+        </div>
 
       </div>
+
     </div>
 
   </div>

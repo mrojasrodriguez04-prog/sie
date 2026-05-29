@@ -259,8 +259,15 @@ body {
   display: block;
   margin-top: 2px;
 
+
 }
 
+
+
+.gestion-text h3{
+    color:#012970;
+    font-weight:700;
+}
 @media (max-width: 991px) {
 
   .info-card {

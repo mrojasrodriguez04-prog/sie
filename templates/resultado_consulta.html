@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Resultado Consulta</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/resultado_consulta.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+  
+    <div class="top-bar">
+        <a href="/consulta/ventas"  class="btn-volver">Volver</a>
+    </div>
+
+    <h1>Estadísticas de Ventas</h1>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Fecha</th>
+
+                <th>Empresa</th>
+
+                <th>Unidades vendidas</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for r in resumen %}
+
+            <tr>
+
+                <td>{{ r.fecha }}</td>
+
+                <td>
+
+                    <div class="empresa-info">
+
+                        <span class="punto-color"
+                        style="background: {{ r.color }}"></span>
+
+                        {{ r.empresa }}
+
+                    </div>
+
+                </td>
+
+                <td>{{ r.unidades }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <div class="grafica-container">
+
+        <canvas id="grafica"></canvas>
+
+    </div>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById("dropdownUser").classList.toggle("active");}
+            window.onclick = function(e){
+                if(!e.target.closest('.user-menu')){
+                    document.getElementById("dropdownUser")
+                    .classList.remove("active");
+                }
+}
+        const ctx = document.getElementById('grafica');
+
+        new Chart(ctx, {
+
+            type: 'line',
+
+            data: {
+
+                labels: {{ labels|tojson }},
+
+                datasets: {{ datasets|tojson }}
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                interaction: {
+                    mode: 'nearest',
+                    intersect: false
+                },
+
+                plugins: {
+
+                    legend: {
+
+                        position: 'bottom'
+
+                    }
+
+                },
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,168 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap');
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:'Work Sans', sans-serif;
+  background:#f4f6fb;
+  color:#2f405c;
+}
+
+/* TITULO AFUERA */
+.page-header{
+  padding:20px 35px 10px;
+}
+
+.page-title{
+  font-size:18px;
+  font-weight:600;
+  color:#012970;
+  margin-bottom:3px;
+}
+
+.breadcrumb{
+  color:#7c8db5;
+  font-size:15px;
+  font-weight:600;
+}
+.breadcrumb a {
+  color:#7c8db5;
+  font-size:15px;
+  font-weight:600;
+}
+.breadcrumb a:hover {
+  color: #51678f;
+}
+
+/* CAJA BLANCA */
+.container{
+  width:98%;
+  max-width:1450px;
+  margin:10px auto 30px;
+  background:white;
+  border-radius:8px;
+  padding:45px 50px;
+}
+
+/* ANALISIS */
+.analysis-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:#012970;
+  font-size:20px;
+  font-weight:400;
+  margin-bottom:22px;
+}
+
+.analysis-title i{
+  font-size:24px;
+}
+
+/* TEXO */
+.description{
+  font-size:14px;
+  color:#424853;
+  margin-bottom:28px;
+  line-height:1.5;
+}
+
+/* FORM */
+form{
+  width:100%;
+}
+
+/* INPUT GROUP */
+.form-group{
+  display:flex;
+  flex-direction:column;
+  margin-bottom:24px;
+}
+
+/* LABELS */
+label{
+  font-size:14px;
+  font-weight:550;
+  color:#303b52;
+  margin-bottom:10px;
+}
+
+/* INPUTS */
+select,
+input{
+  width:100%;
+  height:40px;
+  border:1px solid #d9dee8;
+  border-radius:8px;
+  background:#ffffff;
+  padding:0 15px;
+  font-size:14px;
+  color:#333;
+  outline:none;
+}
+
+/* FILAS */
+.grid-2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:28px;
+  margin-bottom:24px;
+}
+
+.grid-3{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:28px;
+  margin-bottom:30px;
+}
+
+
+/* BOTONES */
+.buttons{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.btn-consultar{
+  background:#39A900;
+  color:white;
+  border:none;
+  border-radius:8px;
+  padding:10px 14px;
+  font-size:12px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.btn-consultar:hover{
+  background:#2f8600;
+}
+
+.btn-limpiar{
+  background:white;
+  border:1px solid #bfc7d4;
+  color:#68758d;
+  border-radius:8px;
+  padding:10px 24px;
+  font-size:14px;
+  cursor:pointer;
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+
+  .grid-2,
+  .grid-3{
+    grid-template-columns:1fr;
+  }
+
+  .container{
+    padding:30px 20px;
+  }
+
+}
