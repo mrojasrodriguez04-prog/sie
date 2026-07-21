@@ -1,11 +1,28 @@
-from flask import Flask, request, render_template, redirect, session, url_for,flash
+from flask import jsonify,Flask, request, render_template, redirect, session, url_for,flash
 from werkzeug.security import check_password_hash, generate_password_hash
-from models import db,TipoFlota, Competidor,ProductoServicio,HistoricoVentas, CategoriaProductoServicio, Empresario, Subsector, Ciudad, Empresa, Usuario, Sede,RedSocial, ProcesoEmpresarial, Cargo, Stakeholder,CanalVenta,Problematica,Infraestructura,SoftwareUsado
+from models import db,Sector,TipoFlota, Competidor,ProductoServicio,HistoricoVentas, CategoriaProductoServicio, Empresario, Subsector, Ciudad, Empresa, Usuario, Sede,RedSocial, ProcesoEmpresarial, Cargo, Stakeholder,CanalVenta,Problematica,Infraestructura,SoftwareUsado
 from datetime import timedelta
 from datetime import datetime
 from config import Config
 from sqlalchemy import distinct
-from flask import jsonify
+from collections import Counter
+from io import BytesIO
+import pandas as pd
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
+from reportlab.lib import colors
+from reportlab.lib.units import inch
+from flask import send_file
+from openpyxl.styles import Font
+from openpyxl.styles import PatternFill
+from openpyxl.styles import Alignment
+from openpyxl.styles import Border
+from openpyxl.styles import Side
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.enums import TA_CENTER, TA_RIGHT
+from reportlab.lib.units import cm
+from openpyxl.drawing.image import Image
+from openpyxl.utils import get_column_letter
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -1076,72 +1093,94 @@ def eliminar_competidor(id):
         )
     )
 
+@app.route("/consultas")
+def modulo_consultas():
+
+    return render_template(
+        "consultas.html"
+    )
 
 @app.route("/consulta/ventas")
 def consulta_ventas():
 
-    categorias = CategoriaProductoServicio.query.all()
+    sectores = Sector.query.all()
 
     return render_template(
         "consulta_ventas.html",
-        categorias=categorias
+        sectores=sectores
     )
 
-@app.route("/productos/categoria/<int:id_categoria>")
-def productos_por_categoria(id_categoria):
+
+@app.route("/get_subsectores/<int:id_sector>")
+def get_subsectores(id_sector):
+
+    subsectores = Subsector.query.filter_by(
+        id_sector=id_sector
+    ).all()
+
+    return jsonify([
+        {
+            "id": s.id_subsector,
+            "nombre": s.nombre_subsector
+        }
+        for s in subsectores
+    ])
+
+
+@app.route("/get_categorias/<int:id_subsector>")
+def get_categorias(id_subsector):
+
+    categorias = CategoriaProductoServicio.query.filter_by(
+        id_subsector=id_subsector
+    ).all()
+
+    return jsonify([
+        {
+            "id": c.id_categoria,
+            "nombre": c.nombre_categoria
+        }
+        for c in categorias
+    ])
+
+@app.route("/get_productos/<int:id_categoria>")
+def get_productos(id_categoria):
 
     productos = db.session.query(
-        distinct(ProductoServicio.nombre_producto)
+        distinct(
+            ProductoServicio.nombre_producto
+        )
     ).filter(
         ProductoServicio.id_categoria == id_categoria
     ).all()
 
-    lista = [p[0] for p in productos]
-    print(lista)
-    return jsonify(lista)
+    return jsonify([
+        p[0]
+        for p in productos
+    ])
+
+
 
 
 from collections import defaultdict
-
 @app.route("/consulta/resultados", methods=["POST"])
 def resultado_consulta():
 
+    from datetime import datetime
+
     id_categoria = request.form["categoria"]
-
     nombre_producto = request.form["producto"]
-
     fecha_inicio = request.form["fecha_inicio"]
-
     fecha_fin = request.form["fecha_fin"]
 
     productos = ProductoServicio.query.filter(
-
         ProductoServicio.id_categoria == id_categoria,
-
         ProductoServicio.nombre_producto == nombre_producto
-
     ).all()
 
-    meses = [
-        "Enero",
-        "Febrero",
-        "Marzo",
-        "Abril",
-        "Mayo",
-        "Junio",
-        "Julio",
-        "Agosto",
-        "Septiembre",
-        "Octubre",
-        "Noviembre",
-        "Diciembre"
-    ]
-
-    labels = []
-
-    datasets = []
-
     resumen = []
+
+    datasets_unidades = []
+    datasets_valor = []
 
     colores = [
         "blue",
@@ -1156,44 +1195,100 @@ def resultado_consulta():
         "gray"
     ]
 
+    fecha_inicio_label = datetime.strptime(
+        fecha_inicio,
+        "%Y-%m-%d"
+    ).strftime("%d/%m/%y")
+
+    fecha_fin_label = datetime.strptime(
+        fecha_fin,
+        "%Y-%m-%d"
+    ).strftime("%d/%m/%y")
+
+    labels = [
+        fecha_inicio_label,
+        fecha_fin_label
+    ]
+
     for i, producto in enumerate(productos):
 
         empresa = producto.empresa
 
         ventas = HistoricoVentas.query.filter(
-
             HistoricoVentas.id_producto == producto.id_producto,
-
             HistoricoVentas.fecha_inicio >= fecha_inicio,
-
             HistoricoVentas.fecha_fin <= fecha_fin
-
         ).order_by(
             HistoricoVentas.fecha_inicio
         ).all()
 
-        data = []
+        if not ventas:
+            continue
 
-        fechas_empresa = []
+        data_unidades = []
+        data_valor = []
 
-        for venta in ventas:
+        cantidad_ventas = len(ventas)
 
-            mes = meses[
-                venta.fecha_inicio.month - 1
-            ]
+        for pos, venta in enumerate(ventas):
+            if cantidad_ventas == 1:
+                data_unidades.append({
+                    "x": 0,
+                    "y": venta.unidades_vendidas
+                })
+                    
+                data_unidades.append({
+                    "x": 100,
+                    "y": venta.unidades_vendidas
+                })
+                
+                data_valor.append({
+                    "x": 0,
+                    "y": float(venta.valor_ventas)
+                })
+                
+                data_valor.append({
+                    "x": 100,
+                    "y": float(venta.valor_ventas)
+                })
+                
+                continue
 
-            fechas_empresa.append(
-                mes
-            )
+            elif cantidad_ventas == 2:
 
-            data.append(
-                venta.unidades_vendidas
-            )
+                if pos == 0:
+                    x = 0
+                else:
+                    x = 100
+
+            else:
+
+                x = round(
+                    (pos * 100) /
+                    (cantidad_ventas - 1),
+                    2
+                )
+               
+            data_unidades.append({
+
+                "x": x,
+
+                "y": venta.unidades_vendidas
+
+            })
+
+            data_valor.append({
+
+                "x": x,
+
+                "y": float(venta.valor_ventas)
+
+            })
 
             resumen.append({
 
                 "fecha":
-                f"{mes} {venta.fecha_inicio.year}",
+                venta.fecha_inicio.strftime("%m/%Y"),
 
                 "empresa":
                 empresa.nombre_empresa,
@@ -1201,36 +1296,51 @@ def resultado_consulta():
                 "unidades":
                 venta.unidades_vendidas,
 
+                "valor":
+                float(venta.valor_ventas),
+
                 "color":
                 colores[i % len(colores)]
 
             })
 
-        # SI SOLO HAY UNA VENTA
-        # DUPLICAMOS EL PUNTO
-        # PARA QUE SE TRACE UNA LÍNEA
-
-        if len(ventas) == 1:
-
-            fechas_empresa.append(
-                fechas_empresa[0]
-            )
-
-            data.append(
-                data[0]
-            )
-
-        if len(fechas_empresa) > len(labels):
-
-            labels = fechas_empresa
-
-        datasets.append({
+        datasets_unidades.append({
 
             "label":
             empresa.nombre_empresa,
 
             "data":
-            data,
+            data_unidades,
+
+            "borderColor":
+            colores[i % len(colores)],
+
+            "backgroundColor":
+            colores[i % len(colores)],
+
+            "fill":
+            False,
+
+            "tension":
+            0.4,
+
+            "pointRadius":
+            5,
+
+            
+
+            "borderWidth":
+            3
+
+        })
+
+        datasets_valor.append({
+
+            "label":
+            empresa.nombre_empresa,
+
+            "data":
+            data_valor,
 
             "borderColor":
             colores[i % len(colores)],
@@ -1256,16 +1366,686 @@ def resultado_consulta():
 
         "resultado_consulta.html",
 
+        producto=nombre_producto,
+
         labels=labels,
 
-        datasets=datasets,
+        resumen=resumen,
 
-        resumen=resumen
+        datasets_unidades=datasets_unidades,
+
+        datasets_valor=datasets_valor
 
     )
 
 
+@app.route("/consulta/problematicas")
+def consulta_problematicas():
+    return render_template(
+        "consulta_problematicas.html"
+        )
+@app.route("/consulta/problematicas/resultados", methods=["POST"])
+def resultado_problematicas():
+
+    tipo_empresa = request.form["tipo_empresa"]
+    tipo_proceso = request.form["tipo_proceso"]
+
+    problematicas = db.session.query(
+        Problematica.descripcion
+    ).join(
+        ProcesoEmpresarial,
+        Problematica.id_proceso == ProcesoEmpresarial.id_proceso
+    ).join(
+        Empresa,
+        ProcesoEmpresarial.id_empresa == Empresa.id_empresa
+    ).filter(
+        Empresa.tipo_oferta == tipo_empresa,
+        ProcesoEmpresarial.tipo_proceso == tipo_proceso
+    ).all()
+
+    lista = [p[0] for p in problematicas]
+
+    conteo = Counter(lista)
+
+    labels = list(conteo.keys())
+    valores = list(conteo.values())
+
+    tabla = []
+
+    for problema, cantidad in conteo.items():
+        tabla.append({
+            "problematica": problema,
+            "cantidad": cantidad
+        })
+
+    return render_template(
+        "resultado_problematicas.html",
+        tipo_empresa=tipo_empresa,
+        tipo_proceso=tipo_proceso,
+        tabla=tabla,
+        labels=labels,
+        valores=valores
+    )
+
+@app.route("/consulta/empresas")
+def consulta_empresas():
+
+    sectores = Sector.query.all()
+
+    return render_template(
+        "consulta_empresas.html",
+        sectores=sectores
+    )
+
+@app.route("/consulta_empresas/get_subsectores/<int:id_sector>")
+def get_subsectores_empresa(id_sector):
+
+    subsectores = Subsector.query.filter_by(
+        id_sector=id_sector
+    ).all()
+
+    return jsonify([
+        {
+            "id": s.id_subsector,
+            "nombre": s.nombre_subsector
+        }
+        for s in subsectores
+    ])
+
+@app.route("/consulta/buscar_empresas")
+def buscar_empresas():
+
+    tipo_empresa = request.args.get("tipo_empresa")
+    sector = request.args.get("sector")
+    subsector = request.args.get("subsector")
+    tamano = request.args.get("tamano")
+
+    if not tipo_empresa and not sector and not subsector and not tamano:
+        return jsonify([])
+
+    consulta = db.session.query(
+        Empresa.nombre_empresa,
+        ProductoServicio.nombre_producto,
+        Empresa.numero_empleados
+    ).join(
+        ProductoServicio,
+        Empresa.id_empresa == ProductoServicio.id_empresa
+    ).join(
+        Subsector,
+        Empresa.id_subsector == Subsector.id_subsector
+    ).join(
+        Sector,
+        Subsector.id_sector == Sector.id_sector
+    )
+
+    if tipo_empresa:
+        consulta = consulta.filter(
+            Empresa.tipo_oferta == tipo_empresa
+        )
+
+    if sector:
+        consulta = consulta.filter(
+            Sector.id_sector == sector
+        )
+
+    if subsector:
+        consulta = consulta.filter(
+            Empresa.id_subsector == subsector
+        )
+
+    if tamano:
+        consulta = consulta.filter(
+            Empresa.tamano_empresa == tamano
+        )
+
+    resultados = consulta.all()
+
+    return jsonify([
+        {
+            "empresa": e.nombre_empresa,
+            "producto": e.nombre_producto,
+            "empleados": e.numero_empleados
+        }
+        for e in resultados
+    ])
+@app.route("/consulta/buscar_infraestructura")
+def buscar_infraestructura():
+
+    tecnologias = request.args.getlist("tecnologia")
+
+    # Si no hay ninguna tecnología seleccionada,
+    # no mostrar empresas.
+    if len(tecnologias) == 0:
+        return jsonify([])
+
+    consulta = db.session.query(
+        Empresa.nombre_empresa,
+        Sector.nombre_sector,
+        Empresa.tamano_empresa,
+        Infraestructura.tipo
+    ).join(
+        Subsector,
+        Empresa.id_subsector == Subsector.id_subsector
+    ).join(
+        Sector,
+        Subsector.id_sector == Sector.id_sector
+    ).join(
+        Infraestructura,
+        Empresa.id_empresa == Infraestructura.id_empresa
+    ).filter(
+        Infraestructura.tipo.in_(tecnologias)
+    )
+
+    resultados = consulta.all()
+
+    return jsonify([
+        {
+            "empresa": r[0],
+            "sector": r[1],
+            "tamano": r[2],
+            "tecnologia": r[3]
+        }
+        for r in resultados
+    ])
+
+@app.route("/consulta/exportar_excel")
+def exportar_excel():
+
+    tipo_empresa = request.args.get("tipo_empresa")
+    sector = request.args.get("sector")
+    subsector = request.args.get("subsector")
+    tamano = request.args.get("tamano")
+
+    consulta = db.session.query(
+
+        Empresa.nombre_empresa,
+
+        ProductoServicio.nombre_producto,
+
+        Empresa.numero_empleados
+
+    ).join(
+
+        ProductoServicio
+
+    ).join(
+
+        Subsector,
+
+        Empresa.id_subsector ==
+        Subsector.id_subsector
+
+    ).join(
+
+        Sector,
+
+        Subsector.id_sector ==
+        Sector.id_sector
+
+    )
+
+    if tipo_empresa:
+
+        consulta = consulta.filter(
+
+            Empresa.tipo_oferta ==
+            tipo_empresa
+
+        )
+
+    if sector:
+
+        consulta = consulta.filter(
+
+            Sector.id_sector ==
+            sector
+
+        )
+
+    if subsector:
+
+        consulta = consulta.filter(
+
+            Subsector.id_subsector ==
+            subsector
+
+        )
+
+    if tamano:
+
+        consulta = consulta.filter(
+
+            Empresa.tamano_empresa ==
+            tamano
+
+        )
+
+    datos = consulta.all()
+
+    df = pd.DataFrame(
+
+        datos,
+
+        columns=[
+
+            "Empresa",
+
+            "Producto / Servicio",
+
+            "Número de empleados"
+
+        ]
+
+    )
+
+    archivo = BytesIO()
+
+    with pd.ExcelWriter(
+
+        archivo,
+
+        engine="openpyxl"
+
+    ) as writer:
+
+        df.to_excel(
+
+            writer,
+
+            index=False,
+
+            startrow=7,
+
+            sheet_name="Empresas"
+
+        )
+
+        libro = writer.book
+
+        hoja = writer.sheets["Empresas"]
 
 
+        # ---------------- LOGO ----------------
+
+        try:
+
+            logo = Image(
+                "static/img/logo_sena.png"
+            )
+
+            logo.width = 75
+
+            logo.height = 75
+
+            hoja.add_image(
+                logo,
+                "A1"
+            )
+
+        except:
+
+            pass
+
+
+        # ---------------- TITULO ----------------
+
+        hoja.merge_cells("B1:D1")
+
+        hoja["B1"] = "SIE"
+
+        hoja["B1"].font = Font(
+
+            size=20,
+
+            bold=True,
+
+            color="012970"
+
+        )
+
+        hoja["B1"].alignment = Alignment(
+
+            horizontal="center"
+
+        )
+
+
+        hoja.merge_cells("A3:D3")
+
+        hoja["A3"] = "REPORTE DE EMPRESAS"
+
+        hoja["A3"].font = Font(
+
+            size=16,
+
+            bold=True,
+
+            color="012970"
+
+        )
+
+        hoja["A3"].alignment = Alignment(
+
+            horizontal="center"
+
+        )
+
+
+        # ---------------- FECHA ----------------
+
+        hoja["A5"] = "Fecha de generación"
+
+        hoja["B5"] = datetime.now().strftime(
+
+            "%d/%m/%Y %H:%M"
+
+        )
+
+
+        # ---------------- FILTROS ----------------
+
+        hoja["A6"] = "Tipo empresa"
+
+        hoja["B6"] = (
+
+            tipo_empresa
+
+            if tipo_empresa
+
+            else "Todos"
+
+        )
+
+        hoja["C6"] = "Tamaño"
+
+        hoja["D6"] = (
+
+            tamano
+
+            if tamano
+
+            else "Todos"
+
+        )
+
+
+        # ---------------- ESTILOS ----------------
+
+        verde = PatternFill(
+
+            fill_type="solid",
+
+            start_color="39A900",
+
+            end_color="39A900"
+
+        )
+
+        blanco = Font(
+
+            color="FFFFFF",
+
+            bold=True
+
+        )
+
+
+        for celda in hoja[8]:
+
+            celda.fill = verde
+
+            celda.font = blanco
+
+            celda.alignment = Alignment(
+
+                horizontal="center"
+
+            )
+
+
+        borde = Border(
+
+            left=Side(style="thin"),
+
+            right=Side(style="thin"),
+
+            top=Side(style="thin"),
+
+            bottom=Side(style="thin")
+
+        )
+
+
+        for fila in hoja.iter_rows():
+
+            for celda in fila:
+
+                celda.border = borde
+
+
+        # ---------------- AJUSTAR COLUMNAS ----------------
+
+    for columna in range(1, hoja.max_column + 1):
+        
+        longitud = 0
+        
+        letra = get_column_letter(columna)
+        
+        for fila in range(1, hoja.max_row + 1):
+            
+            valor = hoja.cell(row=fila, column=columna).value
+            
+            if valor:
+                longitud = max(
+                    longitud,
+                    len(str(valor))
+                )
+        hoja.column_dimensions[letra].width = longitud + 5
+
+
+    archivo.seek(0)
+
+    return send_file(
+
+        archivo,
+
+        download_name="Reporte_Empresas.xlsx",
+
+        as_attachment=True,
+
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+    )
+@app.route("/consulta/exportar_pdf")
+def exportar_pdf():
+
+    tipo_empresa = request.args.get("tipo_empresa")
+    sector = request.args.get("sector")
+    subsector = request.args.get("subsector")
+    tamano = request.args.get("tamano")
+
+    consulta = db.session.query(
+
+        Empresa.nombre_empresa,
+
+        ProductoServicio.nombre_producto,
+
+        Empresa.numero_empleados
+
+    ).join(
+
+        ProductoServicio
+
+    ).join(
+
+        Subsector,
+        Empresa.id_subsector == Subsector.id_subsector
+
+    ).join(
+
+        Sector,
+        Subsector.id_sector == Sector.id_sector
+
+    )
+
+    if tipo_empresa:
+        consulta = consulta.filter(
+            Empresa.tipo_oferta == tipo_empresa
+        )
+
+    if sector:
+        consulta = consulta.filter(
+            Sector.id_sector == sector
+        )
+
+    if subsector:
+        consulta = consulta.filter(
+            Subsector.id_subsector == subsector
+        )
+
+    if tamano:
+        consulta = consulta.filter(
+            Empresa.tamano_empresa == tamano
+        )
+
+    datos = consulta.all()
+
+    archivo = BytesIO()
+
+    pdf = SimpleDocTemplate(
+        archivo,
+        rightMargin=1.5*cm,
+        leftMargin=1.5*cm,
+        topMargin=1.5*cm,
+        bottomMargin=1.5*cm
+    )
+
+    estilos = getSampleStyleSheet()
+
+    titulo = estilos["Heading1"]
+    titulo.alignment = TA_CENTER
+    titulo.textColor = colors.HexColor("#012970")
+
+    texto = estilos["Normal"]
+
+    elementos = []
+
+    try:
+
+        logo = Image(
+            "static/img/logo_sena.png",
+            width=2.2*cm,
+            height=2.2*cm
+        )
+
+        elementos.append(logo)
+
+    except:
+        pass
+
+    elementos.append(
+        Paragraph(
+            "<b>SIE</b>",
+            estilos["Title"]
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            "REPORTE DE EMPRESAS",
+            titulo
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            "Fecha de generación: "
+            + datetime.now().strftime("%d/%m/%Y %H:%M"),
+            texto
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            f"<b>Tipo empresa:</b> {tipo_empresa if tipo_empresa else 'Todos'}",
+            texto
+        )
+    )
+
+    elementos.append(
+        Paragraph(
+            f"<b>Tamaño:</b> {tamano if tamano else 'Todos'}",
+            texto
+        )
+    )
+
+    elementos.append(
+        Spacer(1,0.5*cm)
+    )
+
+    tabla = [[
+
+        "Empresa",
+
+        "Producto / Servicio",
+
+        "Empleados"
+
+    ]]
+
+    for fila in datos:
+
+        tabla.append([
+
+            fila[0],
+
+            fila[1],
+
+            fila[2]
+
+        ])
+
+    t = Table(
+        tabla,
+        colWidths=[7*cm,7*cm,3*cm]
+    )
+
+    t.setStyle(
+
+        TableStyle([
+
+            ("BACKGROUND",(0,0),(-1,0),colors.HexColor("#39A900")),
+
+            ("TEXTCOLOR",(0,0),(-1,0),colors.white),
+
+            ("FONTNAME",(0,0),(-1,0),"Helvetica-Bold"),
+
+            ("ALIGN",(0,0),(-1,-1),"CENTER"),
+
+            ("GRID",(0,0),(-1,-1),0.5,colors.black),
+
+            ("BOTTOMPADDING",(0,0),(-1,0),8),
+
+            ("BACKGROUND",(0,1),(-1,-1),colors.white)
+
+        ])
+
+    )
+
+    elementos.append(t)
+
+    pdf.build(elementos)
+
+    archivo.seek(0)
+
+    return send_file(
+
+        archivo,
+
+        download_name="Reporte_Empresas.pdf",
+
+        as_attachment=True
+
+    )
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,31 +1,39 @@
+
 <!doctype html>
 <html lang="es">
+
 <head>
+
 <meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
 <title>Consulta Ventas</title>
 
-<link
-rel="stylesheet"
-href="{{ url_for('static', filename='css/consultaventa.css') }}"
->
+<link rel="stylesheet"
+href="{{ url_for('static', filename='css/consultaventa.css') }}">
+
 <link rel="stylesheet"
 href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
 </head>
+
 <body>
 
 
 <div class="page-header">
 
 <h1 class="page-title">
+
 Módulo Consultas
+
 </h1>
 
 <div class="breadcrumb">
-<a href="/panel">Inicio</a> / Análisis de Ventas
+
+Inicio / Análisis de Ventas
+
 </div>
 
 </div>
@@ -33,40 +41,69 @@ Módulo Consultas
 <div class="container">
 
 <div class="analysis-title">
-  <i class="bi bi-graph-up"></i>
-  <span>Análisis de Ventas</span>
+
+<i class="bi bi-graph-up"></i>
+
+<span>
+Análisis de Ventas
+</span>
+
 </div>
 
 <p class="description">
-Use los filtros para consultar ventas históricas de productos o servicios,
-incluyendo competidores y canales de distribución.
+
+Seleccione los filtros para comparar
+ventas históricas de productos o
+servicios entre empresas.
+
 </p>
 
-<form action="/consulta/resultados" method="POST">
+<form method="POST">
 
 <div class="form-row">
 
 <div class="form-group">
-<label>Categoría principal</label>
 
-<select id="categoria" name="categoria">
+<label>
+Sector Económico
+</label>
 
-<option value="">Seleccione</option>
+<select
+id="sector">
 
-{% for c in categorias %}
-<option value="{{ c.id_categoria }}">
-{{ c.nombre_categoria }}
+<option value="">
+Seleccione
 </option>
+
+{% for s in sectores %}
+
+<option value="{{ s.id_sector }}">
+
+{{ s.nombre_sector }}
+
+</option>
+
 {% endfor %}
 
 </select>
+
 </div>
 
 <div class="form-group">
-<label>Producto/Servicio más importante</label>
 
-<select id="producto" name="producto">
+<label>
+Subsector
+</label>
+
+<select
+id="subsector">
+
+<option value="">
+Seleccione
+</option>
+
 </select>
+
 </div>
 
 </div>
@@ -74,35 +111,83 @@ incluyendo competidores y canales de distribución.
 <div class="form-row">
 
 <div class="form-group">
-<label>Fecha inicio</label>
+
+<label>
+Categoría
+</label>
+
+<select
+id="categoria"
+name="categoria">
+
+<option value="">
+Seleccione
+</option>
+
+</select>
+
+</div>
+
+<div class="form-group">
+
+<label>
+Producto
+</label>
+
+<select
+id="producto"
+name="producto">
+
+<option value="">
+Seleccione
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+<div class="form-row">
+
+<div class="form-group">
+
+<label>
+Fecha inicio
+</label>
 
 <input
 type="date"
 name="fecha_inicio"
-required
->
+required>
+
 </div>
 
 <div class="form-group">
-<label>Fecha fin</label>
+
+<label>
+Fecha fin
+</label>
 
 <input
 type="date"
 name="fecha_fin"
-required
->
+required>
+
 </div>
 
 </div>
 
 <div class="buttons">
 
-<button type="submit" class="btn-consultar">
-Consultar
-</button>
+<button
+type="submit"
+formaction="/consulta/resultados"
+class="btn-consultar">
 
-<button type="reset" class="btn-limpiar">
-Limpiar
+Generar Análisis
+
+
 </button>
 
 </div>
@@ -111,31 +196,112 @@ Limpiar
 
 </div>
 
+
 <script>
 
-const categoria = document.getElementById("categoria");
+const sector =
+document.getElementById("sector");
 
-categoria.addEventListener("change", async () => {
+const subsector =
+document.getElementById("subsector");
 
-const id = categoria.value;
+const categoria =
+document.getElementById("categoria");
 
-const response = await fetch(
-`/productos/categoria/${id}`
+const producto =
+document.getElementById("producto");
+
+
+
+sector.addEventListener(
+"change",
+async ()=>{
+
+const response =
+await fetch(
+`/get_subsectores/${sector.value}`
 );
 
-const data = await response.json();
+const data =
+await response.json();
 
-const producto = document.getElementById("producto");
+subsector.innerHTML =
+'<option value="">Seleccione</option>';
 
-producto.innerHTML = "";
+categoria.innerHTML =
+'<option value="">Seleccione</option>';
 
-data.forEach(p => {
+producto.innerHTML =
+'<option value="">Seleccione</option>';
 
-producto.innerHTML += `
-<option value="${p}">
+data.forEach(s=>{
+
+subsector.innerHTML +=
+
+`<option value="${s.id}">
+${s.nombre}
+</option>`;
+
+});
+
+});
+
+
+
+subsector.addEventListener(
+"change",
+async ()=>{
+
+const response =
+await fetch(
+`/get_categorias/${subsector.value}`
+);
+
+const data =
+await response.json();
+
+categoria.innerHTML =
+'<option value="">Seleccione</option>';
+
+producto.innerHTML =
+'<option value="">Seleccione</option>';
+
+data.forEach(c=>{
+
+categoria.innerHTML +=
+
+`<option value="${c.id}">
+${c.nombre}
+</option>`;
+
+});
+
+});
+
+
+
+categoria.addEventListener(
+"change",
+async ()=>{
+
+const response =
+await fetch(
+`/get_productos/${categoria.value}`
+);
+
+const data =
+await response.json();
+
+producto.innerHTML =
+'<option value="">Seleccione</option>';
+
+data.forEach(p=>{
+
+producto.innerHTML +=
+
+`<option value="${p}">
 ${p}
-</option>
-`;
+</option>`;
 
 });
 
@@ -144,4 +310,6 @@ ${p}
 </script>
 
 </body>
+
 </html>
+

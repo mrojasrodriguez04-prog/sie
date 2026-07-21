@@ -1,138 +1,375 @@
+
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <title>Resultado Consulta</title>
+<title>
+Análisis Comparativo
+</title>
 
-    <link rel="stylesheet"
-    href="{{ url_for('static', filename='css/resultado_consulta.css') }}">
+<link rel="stylesheet"
+href="{{ url_for('static', filename='css/resultado_consulta.css') }}">
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 
 <body>
-  
-    <div class="top-bar">
-        <a href="/consulta/ventas"  class="btn-volver">Volver</a>
-    </div>
 
-    <h1>Estadísticas de Ventas</h1>
+<div class="top-bar">
 
-    <table>
+<a href="/consulta/ventas"
+class="btn-volver">
 
-        <thead>
+Volver
 
-            <tr>
+</a>
 
-                <th>Fecha</th>
+</div>
 
-                <th>Empresa</th>
+<h1>
 
-                <th>Unidades vendidas</th>
+Análisis Comparativo de Ventas
 
-            </tr>
+</h1>
 
-        </thead>
+<h2>
 
-        <tbody>
+{{ producto }}
 
-            {% for r in resumen %}
+</h2>
 
-            <tr>
+<table>
 
-                <td>{{ r.fecha }}</td>
+<thead>
 
-                <td>
+<tr>
 
-                    <div class="empresa-info">
+<th>Fecha</th>
 
-                        <span class="punto-color"
-                        style="background: {{ r.color }}"></span>
+<th>Empresa</th>
 
-                        {{ r.empresa }}
+<th>Unidades Vendidas</th>
 
-                    </div>
+<th>Valor Ventas</th>
 
-                </td>
+</tr>
 
-                <td>{{ r.unidades }}</td>
+</thead>
 
-            </tr>
+<tbody>
 
-            {% endfor %}
+{% for r in resumen %}
 
-        </tbody>
+<tr>
 
-    </table>
+<td>
 
-    <div class="grafica-container">
+{{ r.fecha }}
 
-        <canvas id="grafica"></canvas>
+</td>
 
-    </div>
+<td>
 
-    <script>
-        function toggleMenu() {
-            document.getElementById("dropdownUser").classList.toggle("active");}
-            window.onclick = function(e){
-                if(!e.target.closest('.user-menu')){
-                    document.getElementById("dropdownUser")
-                    .classList.remove("active");
-                }
+<div class="empresa-info">
+
+<span
+class="punto-color"
+style="background: {{ r.color }}">
+</span>
+
+{{ r.empresa }}
+
+</div>
+
+</td>
+
+<td>
+
+{{ r.unidades }}
+
+</td>
+
+<td>
+
+${{ "{:,.0f}".format(r.valor) }}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+<div class="graficas">
+
+<div class="grafica-box">
+
+<h3>
+
+Unidades Vendidas
+
+</h3>
+
+<canvas
+id="graficaUnidades">
+</canvas>
+
+</div>
+
+<div class="grafica-box">
+
+<h3>
+
+Valor Ventas
+
+</h3>
+
+<canvas
+id="graficaValor">
+</canvas>
+
+</div>
+
+</div>
+
+<script>
+
+const ctx1 =
+document.getElementById(
+"graficaUnidades"
+);
+
+new Chart(ctx1, {
+
+    type: "line",
+
+    data: {
+
+        datasets: {{ datasets_unidades|tojson }}
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        interaction: {
+
+            mode: "point",
+
+            intersect: true
+
+        },
+
+    
+        plugins: {
+           
+            
+            legend: {
+
+                position: "bottom"
+
+            },
+        tooltip: {
+
+    callbacks: {
+
+        title: function(context){
+
+            const x = context[0].parsed.x;
+
+            return x <= 50
+                ? "{{ labels[0] }}"
+                : "{{ labels[1] }}";
+
+        },
+
+        label: function(context){
+
+            return context.dataset.label +
+                   ": " +
+                   context.parsed.y.toLocaleString('es-CO');
+
+        }
+
+    }
+
 }
-        const ctx = document.getElementById('grafica');
 
-        new Chart(ctx, {
+},
+        
 
-            type: 'line',
+ 
+        scales: {
 
-            data: {
+            x: {
 
-                labels: {{ labels|tojson }},
+                type: "linear",
 
-                datasets: {{ datasets|tojson }}
+                min: 0,
+
+                max: 100,
+
+                ticks: {
+
+                    callback: function(value) {
+
+                        if(value == 0)
+                            return "{{ labels[0] }}";
+
+                        if(value == 100)
+                            return "{{ labels[1] }}";
+
+                        return "";
+
+                    }
+
+                }
 
             },
 
-            options: {
+            y: {
 
-                responsive: true,
+                beginAtZero: true,
 
-                interaction: {
-                    mode: 'nearest',
-                    intersect: false
-                },
+                title: {
 
-                plugins: {
+                    display: true,
 
-                    legend: {
-
-                        position: 'bottom'
-
-                    }
-
-                },
-
-                scales: {
-
-                    y: {
-
-                        beginAtZero: true
-
-                    }
+                    text: "Unidades Vendidas"
 
                 }
 
             }
 
-        });
+        }
 
-    </script>
+    }
+
+});
+
+
+
+const ctx2 =
+document.getElementById(
+"graficaValor"
+);
+
+new Chart(ctx2, {
+
+    type: "line",
+
+    data: {
+
+        datasets: {{ datasets_valor|tojson }}
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        interaction: {
+
+            mode: "nearest",
+
+            intersect: true
+
+        },
+
+        plugins: {
+
+            legend: {
+
+                position: "bottom"
+
+            },
+           tooltip: {
+
+    callbacks: {
+
+        title: function(context){
+
+            const x = context[0].parsed.x;
+
+            return x <= 50
+                ? "{{ labels[0] }}"
+                : "{{ labels[1] }}";
+
+        },
+
+        label: function(context){
+
+            return context.dataset.label +
+                   ": " +
+                   context.parsed.y.toLocaleString('es-CO');
+
+        }
+
+    }
+
+}
+
+        },
+
+        scales: {
+
+            x: {
+
+                type: "linear",
+
+                min: 0,
+
+                max: 100,
+
+                ticks: {
+
+                    callback: function(value) {
+
+                        if(value == 0)
+                            return "{{ labels[0] }}";
+
+                        if(value == 100)
+                            return "{{ labels[1] }}";
+
+                        return "";
+
+                    }
+
+                }
+
+            },
+
+            y: {
+
+                beginAtZero: true,
+
+                title: {
+
+                    display: true,
+
+                    text: "Valor Ventas"
+
+                }
+
+            }
+
+        }
+
+    }
+
+});
+
+</script>
 
 </body>
 
 </html>
+

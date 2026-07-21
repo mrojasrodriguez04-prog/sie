@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>
+Problemáticas Empresariales
+</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static', filename='css/problematicas.css') }}">
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<header class="top-header">
+
+    <div class="header-left">
+
+        <button
+        class="menu-btn"
+        onclick="toggleSidebar()">
+
+            <i class="bi bi-list"></i>
+
+        </button>
+
+        <img
+        src="{{ url_for('static', filename='img/logo_sena.png') }}"
+        class="logos">
+
+        <span class="logo-text">
+            SIE
+        </span>
+
+    </div>
+
+    <div class="header-right">
+
+        <div class="user-menu">
+
+            <i class="bi bi-person-circle user-icon"></i>
+
+            <i class="bi bi-chevron-down arrow"></i>
+
+        </div>
+
+    </div>
+
+</header>
+
+<aside
+class="sidebar"
+id="sidebar">
+
+    <ul>
+
+        <li>
+
+            <a href="/panel">
+
+                <i class="bi bi-grid"></i>
+
+                Inicio
+
+            </a>
+
+        </li>
+
+        <li class="active">
+
+            <i class="bi bi-search"></i>
+
+            Módulo Consultas
+
+            <ul class="submenu">
+
+                <li>
+                    <a href="/consulta/ventas">
+                        Análisis de Ventas
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/consulta/problematicas">
+                        Problemáticas Empresariales
+                    </a>
+                </li>
+
+            </ul>
+
+        </li>
+
+    </ul>
+
+</aside>
+
+<div class="main-content">
+
+<a
+href="/consulta/problematicas"
+class="btn-volver">
+
+Volver
+
+</a>
+
+<h1>
+Problemáticas Empresariales
+</h1>
+
+<div class="problemas-box">
+
+    <h3>
+
+        <i class="bi bi-bar-chart"></i>
+
+        Problemáticas Identificadas
+
+    </h3>
+
+    <table class="tabla-problemas">
+
+        <tbody>
+
+        {% for item in tabla %}
+
+        <tr>
+
+            <td>
+
+                {{ item.problematica }}
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="grafica-box">
+
+    <canvas id="grafica"></canvas>
+
+</div>
+
+</div>
+
+<script>
+
+function toggleSidebar(){
+
+    document
+    .getElementById("sidebar")
+    .classList.toggle("active");
+
+}
+
+new Chart(
+
+document.getElementById("grafica"),
+
+{
+
+type:"bar",
+
+data:{
+
+labels:{{ labels|tojson }},
+
+datasets:[{
+
+label:"Cantidad",
+
+data:{{ valores|tojson }},
+
+backgroundColor:[
+
+"#1E88E5",
+"#FFC107",
+"#E53935",
+"#43A047",
+"#8E24AA",
+"#FB8C00"
+
+]
+
+}]
+
+},
+
+options:{
+
+responsive:true,
+
+plugins:{
+
+legend:{
+display:false
+}
+
+}
+
+}
+
+}
+
+);
+
+</script>
+
+</body>
+
+</html>
