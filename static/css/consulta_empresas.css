@@ -439,6 +439,31 @@ accent-color:var(--verde);
 
 }
 
+.paginacion{
+
+    margin-top:20px;
+    text-align:center;
+
+}
+
+.paginacion button{
+
+    margin:0 4px;
+    padding:8px 14px;
+    border:none;
+    border-radius:6px;
+    background:#39A900;
+    color:white;
+    cursor:pointer;
+
+}
+
+.paginacion button:hover{
+
+    background:#2e8700;
+
+}
+
 /* RESPONSIVE */
 
 @media(max-width:1100px){
